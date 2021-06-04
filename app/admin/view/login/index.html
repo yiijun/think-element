@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登陆</title>
+    <link rel="stylesheet" href="/static/element/plus/css/index.css">
+    <link rel="stylesheet" href="/static/backend/css/login.css">
+</head>
+<body>
+
+<div id="app">
+    <div class="main">
+        <div>
+            <img src="/static/backend/image/avatar.png" class="avatar">
+        </div>
+        <el-form ref="form" :model="form" :rules="rules" label-width="auto">
+            <el-form-item prop="uname">
+                <el-input placeholder="用户名" v-model="form.uname" prop="uname">
+                    <template #prefix>
+                        <i class="el-input__icon el-icon-user"></i>
+                    </template>
+                </el-input>
+            </el-form-item>
+
+            <el-form-item>
+                <el-input v-model="form.pass" placeholder="密码" type="password" prop="pass" show-password>
+                    <template #prefix>
+                        <i class="el-input__icon el-icon-unlock"></i>
+                    </template>
+                </el-input>
+            </el-form-item>
+
+            <el-row>
+                <el-col :span="16">
+                    <div class="grid-content bg-purple">
+                        <el-form-item>
+                            <el-input v-model="form.captcha" placeholder="验证码" prop="captcha">
+                                <template #prefix>
+                                    <i class="el-input__icon el-icon-more-outline"></i>
+                                </template>
+                            </el-input>
+                        </el-form-item>
+                    </div>
+                </el-col>
+                <el-col :span="8">
+                    <div class="grid-content bg-purple">
+                        <img src="{:captcha_src()}" alt="captcha" id="captcha" @click="onCaptcha" />
+                    </div>
+                </el-col>
+            </el-row>
+            <!--<el-form-item class="select">
+                <el-checkbox v-model="form.checked">保持会话</el-checkbox>
+            </el-form-item>-->
+            <el-form-item>
+                <el-button style="width: 100%" type="primary" @click="onSubmit('form')">立即登陆</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+</div>
+</body>
+</html>
+<!-- 引入组件库 -->
+<script src="/static/vue/3.0.11/vue.global.js"> </script>
+<script src="/static/element/plus/js/index.full.js"></script>
+<script src="/static/js/axios.min.js"></script>
+
+<script>
+    const App = {
+        data:function () {
+            return {
+                form:{
+                    uname:'',
+                    pass:'',
+                    captcha:'',
+                    //checked:false
+                },
+                rules:{
+                    uname: [
+                        { required: true, message: '请输入用户名', trigger: 'blur' },
+                    ],
+                    pass: [
+                        { required: true, message: '请输入密码', trigger: 'blur' },
+                    ],
+                    captcha: [
+                        { required: true, message: '请输入验证码', trigger: 'blur' },
+                    ],
+                }
+            };
+        },
+        methods:{
+            onSubmit:function (forms) {
+                let _this = this;
+                _this.$refs[forms].validate(function (valid) {
+                    if(valid){
+                        console.log(_this.form)
+                        axios.post("{:url('Login/post')}",_this.form).then(function (response) {
+                            console.log(response)
+                            if(response.data.code == 200){
+                                _this.$message.success('登陆成功');
+                                location.href="{:url('Index/index')}"
+                            }else{
+                                _this.$message.error(response.data.msg);
+                                _this.onCaptcha();
+                            }
+                        }).catch(function (error) {
+                            console.log(error)
+                        })
+                    }else{
+                        return false;
+                    }
+                });
+            },
+            onCaptcha:function () {
+                document.getElementById('captcha').src = "/captcha.html?"+Math.random();
+            }
+        },
+    };
+    const app = Vue.createApp(App);
+    app.use(ElementPlus, { size: 'small', zIndex: 3000 });
+    app.mount("#app");
+</script>

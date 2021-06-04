@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{block name="title"}{/block}</title>
+    <link rel="stylesheet" href="/static/element/plus/css/index.css">
+    <link rel="stylesheet" href="/static/backend/css/backend.css">
+</head>
+<body>
+<div id="app">
+    <el-container>
+        {block name="aside"}{include file="common/pub/aside" /}{/block}
+        <el-container>
+            <el-header>
+                {block name="header"}{include file="common/pub/header" /}{/block}
+            </el-header>
+            <el-main>
+                {block name="main"}{/block}
+            </el-main>
+        </el-container>
+    </el-container>
+</div>
+</body>
+</html>
+<!-- 引入组件库 -->
+<script src="/static/vue/3.0.11/vue.global.js"></script>
+<script src="/static/element/plus/js/index.full.js"></script>
+<script src="/static/js/axios.min.js"></script>
+{block name="script"}{/block}
+<script>
+    const common_data = {
+        isCollapse: false,
+        squareUrl: "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
+        search: '',
+        aside_width: '230px',
+    }
+
+    function common_f() {
+        return {
+            hideAside: function () {
+                this.isCollapse = true
+                this.aside_width = '60px'
+            },
+            showAside: function () {
+                this.isCollapse = false
+                this.aside_width = '230px'
+            },
+        }
+    }
+
+    const App = {
+        data: function () {
+            return Object.assign(common_data, data)
+        },
+        methods: Object.assign(common_f(), f()),
+    };
+
+    const app = Vue.createApp(App);
+    app.use(ElementPlus, {size: 'mini', zIndex: 3000});
+    app.mount("#app");
+</script>
