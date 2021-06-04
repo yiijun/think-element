@@ -6,6 +6,7 @@ class Index
 {
     public function index()
     {
-        return View::fetch();
+    		echo 333333333;
+        	return View::fetch();
     }
 }
