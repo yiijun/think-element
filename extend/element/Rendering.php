@@ -20,17 +20,27 @@ class Rendering
 
     public function renderForm()
     {
+        //表单
         $form = [];
         $form_html = '<el-form ref="form" :model="form" label-width="auto">' . PHP_EOL;
 
+        //表格
         $table_html = '<el-table ref="multipleTable" border :data="data" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">';
         $table_html .= '<el-table-column type="selection"width="55"></el-table-column>';
 
+        //查询
+        $search_html = '';
+        $search = [];
+
         foreach ($this->fields as $field) {
-            $form_html .= Hook::make(ucfirst($field['type']), $field) . PHP_EOL;
+            $form_html .= Hook::make(ucfirst($field['type']), $field,'form') . PHP_EOL;
             $form[$field['key']] = $field['value'];
             if (true === $field['prop']['table_show']) {
                 $table_html .= '<el-table-column prop="'.$field['key'].'" label="'.$field['label'].'"></el-table-column>';
+            }
+            if(isset($field['prop']['search'])){
+                $search_html .= Hook::make(ucfirst($field['type']),$field,'search').PHP_EOL;
+                $search[$field['key']] = $field['value'];
             }
         }
         $table_html .= '<el-table-column fixed="right" label="操作" width="120">'.PHP_EOL.
@@ -43,7 +53,9 @@ class Rendering
         View::assign([
             'form' => json_encode($form),
             'form_html' => $form_html,
-            'table_html' => $table_html
+            'table_html' => $table_html,
+            'search_html' => $search_html,
+            'search' => json_encode($search)
         ]);
     }
 }

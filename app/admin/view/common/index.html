@@ -6,6 +6,15 @@
     {include file="common/pub/breadcrumb" /}
 
     <!--在此位置渲染查询-->
+<el-form label-width="auto">
+    <div class="el-search-main">
+        {$search_html|raw}
+
+        <div class="el-form-item"><el-button type="primary" size="mini">查询</el-button></div>
+        <div class="el-form-item"><el-button type="warning" size="mini">重置</el-button></div>
+    </div>
+
+</el-form>
 
     <el-button type="primary" @click="dialogFormVisible = true" icon="el-icon-plus">添加</el-button>
     <el-button type="danger"  @click="dialogFormVisible = true" icon="el-icon-delete">批量删除</el-button>
@@ -24,7 +33,9 @@
 {block name="script"}
 <script>
     const data = {
-            form:{$form|raw}
+            form:{$form|raw},
+            search:{$search|raw},
+
     }
 
     function f(){

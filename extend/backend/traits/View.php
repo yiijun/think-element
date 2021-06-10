@@ -1,4 +1,5 @@
 <?php
+
 namespace backend\traits;
 
 use element\Rendering;
@@ -13,31 +14,34 @@ trait View
 
     public $model;
 
+    public $rending;
+
     public function __construct(App $app)
     {
         $this->request = $app->request;
         $this->controller = $this->request->controller();
         $model_path = '\\app\\admin\\model\\';
-        if(strstr($this->controller,'.')){
-            $model_name = explode('.',$this->controller);
+        if (strstr($this->controller, '.')) {
+            $model_name = explode('.', $this->controller);
             $this->controller = end($model_name);
-            foreach ($model_name as $key => $value){
-                if($key == count($model_name) - 1) break;
-                $model_path .= $value.'\\';
+            foreach ($model_name as $key => $value) {
+                if ($key == count($model_name) - 1) break;
+                $model_path .= $value . '\\';
             }
         }
-        $model_path = $model_path.$this->controller;
+        $model_path = $model_path . $this->controller;
         $this->model = new $model_path;
-        new Rendering(ucfirst($this->controller));
+        $rendering = new Rendering(ucfirst($this->controller));
     }
 
     public function index()
     {
-        if($this->request->isPost()){
+        if ($this->request->isPost()) {
             //获取初始化数据
             $page = $this->request->post('page');
             $search = $this->request->post('search'); //根据字段信息拼接查询
-            $list = $this->model->limit(0,20)->select();
+            $start = ($page - 1) * 20;
+            $list = $this->model->limit($start, 20)->select();
             return success([
                 'list' => $list
             ]);
