@@ -3,20 +3,44 @@
 {block name="title"}控制面板{/block}
 
 {block name="main"}
+    {include file="common/pub/breadcrumb" /}
+
+    <!--在此位置渲染查询-->
+
+    <el-button type="primary" @click="dialogFormVisible = true" icon="el-icon-plus">添加</el-button>
+    <el-button type="danger"  @click="dialogFormVisible = true" icon="el-icon-delete">批量删除</el-button>
+
     <!--渲染表单，表单总是以弹窗的形式来表现-->
-    {$form|raw}
+    <el-dialog title="添加/修改" v-model="dialogFormVisible">
+        {$form_html|raw}
+    </el-dialog>
+
+    <div class="el-table-main">
+        {$table_html|raw}
+    </div>
+
 {/block}
 
 {block name="script"}
 <script>
     const data = {
-        form:{
-            name:'1'
-        }
+            form:{$form|raw}
     }
+
     function f(){
         return {
-
+            toggleSelection(rows) {
+                if (rows) {
+                    rows.forEach(row => {
+                        this.$refs.multipleTable.toggleRowSelection(row);
+                    });
+                } else {
+                    this.$refs.multipleTable.clearSelection();
+                }
+            },
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+            },
         }
     }
 </script>

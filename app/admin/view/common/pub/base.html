@@ -33,6 +33,11 @@
         squareUrl: "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
         search: '',
         aside_width: '230px',
+        dialogFormVisible:false,
+        multipleSelection: [],
+        data:[],
+        page:1,
+        count:0,
     }
 
     function common_f() {
@@ -45,6 +50,20 @@
                 this.isCollapse = false
                 this.aside_width = '230px'
             },
+            //初始化函数，获取表格数据
+            init:function () {
+                let _this = this
+                axios.post('',{page:this.page}).then(function (response) {
+                    if(response.data.code == 200){
+                        _this.data = response.data.data.list
+                        console.log(_this.data)
+                    }else{
+                        this.$message.error('初始化数据失败')
+                    }
+                }).catch(function (error) {
+                    console.log(error)
+                });
+            }
         }
     }
 
@@ -53,6 +72,9 @@
             return Object.assign(common_data, data)
         },
         methods: Object.assign(common_f(), f()),
+        mounted:function () {
+            this.init()
+        }
     };
 
     const app = Vue.createApp(App);

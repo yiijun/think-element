@@ -2,10 +2,21 @@
 
 namespace element\component\ui;
 
+use think\helper\Arr;
+
+
 class Radio
 {
     public static function html(array $fields): string
     {
-        return '<el-form-item label="活动名称"><el-input v-model="form.name"></el-input></el-form-item>';
+        $model = new $fields['prop']['callback'][0]();
+        $radios = $model->{$fields['prop']['callback'][1]}() ?: [];
+        $radios = json_encode($radios, 256);
+        return
+            '<el-form-item label="' . $fields['label'] . '">'.PHP_EOL.
+                '<el-radio-group v-model="form.' . $fields['key'] . '">'.PHP_EOL.
+                    '<el-radio v-for=\'(item,index) in ' . $radios . '\' :label="item.' . $fields['prop']['callback'][2] . '.toString()">{{item.' . $fields['prop']['callback'][3] . '}}</el-radio>'.PHP_EOL.
+                '</el-radio-group>'.PHP_EOL.
+            '</el-form-item>'.PHP_EOL;
     }
 }
