@@ -30,13 +30,9 @@ class Menu
             'placeholder' => '选择父级菜单',
             'prop' => [
                 'table_show' => true,
-                'search' => 'like',
-                'callback' => ['menu', 'getParent'],
-                'ext' => [
-                    'filterable' => true,
-                    'label' => 'name',
-                    'value' => 'id',
-                ]
+                'search' => '=',
+                'filterable' => true,
+                'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getPidSelect','id','name'],
             ]
         ],
         [
@@ -65,7 +61,7 @@ class Menu
             'type' => 'number',
             'label' => '权重',
             'key' => 'weigh',
-            'value' => '',
+            'value' => 1,
             'prop' => [
                 'table_show' => true,
                 'search' => 'like',
@@ -84,11 +80,7 @@ class Menu
             'prop' => [
                 'table_show' => true,
                 'search' => 'like',
-                'callback' => ['menu', 'getShowRadio'],
-                'ext' => [
-                    'label' => 'name',
-                    'value' => 'id',
-                ]
+                'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getShowRadio','id','name'],
             ]
         ],
         [
@@ -99,11 +91,7 @@ class Menu
             'prop' => [
                 'table_show' => true,
                 'search' => 'like',
-                'callback' => ['menu', 'getSonRadio'],
-                'ext' => [
-                    'label' => 'name',
-                    'value' => 'id',
-                ]
+                'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getSonRadio','id','name'],
             ]
         ],
     ];
