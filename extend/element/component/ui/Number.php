@@ -7,7 +7,7 @@ class Number
     public static function html(array $fields,string $form_name = 'form'): string
     {
         return
-            '<el-form-item label="'.$fields['label'].'">'.PHP_EOL.
+            '<el-form-item prop="'.$fields['key'].'" label="'.$fields['label'].'">'.PHP_EOL.
                 '<el-input-number '.PHP_EOL.
                     ':min="'.$fields['prop']['ext']['min'].'" '.PHP_EOL.
                     ':max="'.$fields['prop']['ext']['max'].'" '.PHP_EOL.

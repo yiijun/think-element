@@ -9,6 +9,11 @@ namespace backend\fields;
  */
 class Menu
 {
+    /**
+     * @var bool
+     * 是否开启树形表格
+     */
+   const IS_TREE_TABLE = true;
 
     const FORM_FIELD = [
         [
@@ -19,7 +24,9 @@ class Menu
             'placeholder' => '请输入菜单名称',
             'prop' => [
                 'table_show' => true, //table 是否显示列
-                'search' => 'like' //是否查询
+                'search' => 'like', //是否查询
+                'is_null' => true,//是否必填
+                'trigger' => 'blur'
             ]
         ],
         [
@@ -31,6 +38,8 @@ class Menu
             'prop' => [
                 'table_show' => true,
                 'search' => '=',
+                'is_null' => true,
+                'trigger' => 'change',
                 'filterable' => true,
                 'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getPidSelect','id','name'],
             ]
@@ -43,7 +52,9 @@ class Menu
             'placeholder' => '请输入菜单图标',
             'prop' => [
                 'table_show' => true,
-                'search' => 'like'
+                'search' => 'like',
+                'is_null' => false,
+                'trigger' => 'blur',
             ]
         ],
         [
@@ -54,7 +65,9 @@ class Menu
             'placeholder' => '请输入路由规则',
             'prop' => [
                 'table_show' => true,
-                'search' => 'like'
+                'search' => 'like',
+                'is_null' => true,
+                'trigger' => 'blur',
             ]
         ],
         [
@@ -65,6 +78,7 @@ class Menu
             'prop' => [
                 'table_show' => true,
                 'search' => 'like',
+                'is_null' => false,
                 'ext' => [
                     'min' => 0,
                     'max' => 9999999,
@@ -76,10 +90,12 @@ class Menu
             'type' => 'radio',
             'label' => '显示',
             'key' => 'show',
-            'value' => '',
+            'value' => 1,
             'prop' => [
                 'table_show' => true,
                 'search' => 'like',
+                'is_null' => true,
+                'trigger' => 'blur',
                 'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getShowRadio','id','name'],
             ]
         ],
@@ -87,10 +103,12 @@ class Menu
             'type' => 'radio',
             'label' => '子菜单',
             'key' => 'son',
-            'value' => '',
+            'value' => 1,
             'prop' => [
                 'table_show' => true,
                 'search' => 'like',
+                'is_null' => true,
+                'trigger' => 'change',
                 'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getSonRadio','id','name'],
             ]
         ],

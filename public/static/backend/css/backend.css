@@ -1,0 +1,27 @@
+body,html,#app{height:100%;font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;}
+body{padding:0px;margin:0px; font-size: 12px; color: #606266;}
+.el-left{float: left}
+.el-right{float: right}
+.block{  text-align: center; padding: 10px; border-bottom: 1px solid #333; }
+.block>div{line-height: 40px;}
+.el-menu{border: none;}
+.el-aside{background-color: #222d32; color: #FFFFFF;-webkit-box-shadow:  0px 1px 1px #ccc;box-shadow:  0px 1px 1px #ccc;}
+.el-container{height: 100%;}
+.el-search{ overflow: hidden; clear: both; margin-top: 50px;}
+.el-search .search-input{ background-color: #444 !important; border: 1px solid #444444;}
+
+::-webkit-scrollbar {width: 3px;height: 3px;}
+::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb:horizontal {border-radius: 6px;background: #BDBDBD;}
+::-webkit-scrollbar-button {display: none;}
+::-webkit-scrollbar-track, ::-webkit-scrollbar-track-piece {background: -webkit-gradient(linear,left)}
+::-webkit-scrollbar-track-piece {background: #FFF;}
+.el-header{padding: 0 10px;webkit-box-shadow: 0 2px 8px #f0f1f2;box-shadow: 0 2px 8px #f0f1f2; line-height: 60px;}
+.el-main{box-shadow: 0 2px 8px #f0f1f2; padding: 10px;}
+.el-header .el-dropdown{ float: right; line-height: 60px; padding-right: 20px;}
+.el-header span{padding-right: 20px;}
+.el-dialog__title{font-size: 14px !important;}
+.el-breadcrumb {padding: 10px 0;}
+.el-table-main {margin-top: 20px;}
+.el-search-main{ display: flex; display: -webkit-flex; /* Safari */  flex-wrap:wrap; justify-content: flex-start; padding: 30px;}
+.el-search-main .el-form-item{ margin-right: 10px}
+.el-page-main{margin-top: 20px; float: right;}
