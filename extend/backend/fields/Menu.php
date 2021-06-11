@@ -13,8 +13,16 @@ class Menu
      * @var bool
      * 是否开启树形表格
      */
-   const IS_TREE_TABLE = true;
+    const IS_TREE_TABLE = true;
 
+    /**
+     * 是否展开所有
+     */
+    const EXPAND_ALL = true;
+
+    /**
+     * 定义字段
+     */
     const FORM_FIELD = [
         [
             'type' => 'input',

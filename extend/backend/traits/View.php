@@ -49,9 +49,25 @@ trait View
             //如果是树形表格,采用递归方式获取表格内容，并且默认上级字段为pid
             if(true === $this->rending->tree_table){
                 $list = $this->model->where('pid',0)->limit($start, 20)->select();
+                if(!empty($list)){
+                    $c = function (&$list) use (&$c){
+                        foreach ($list as $key => &$value){
+                            //根据父级别ID查询
+                            $value['children'] = $this->model->where('pid',$value['id'])->select();
+                            if(!empty($value['children'])){
+                                $c($value['children']);
+                            }
+                        }
+                        return $list;
+                    };
+                    $list = $c($list);
+                }
+            }else{
+                $list = $this->model->limit($start, 20)->select();
             }
 
-            $list = $this->model->limit($start, 20)->select();
+
+
             $count = $this->model->count();
             return success([
                 'list' => $list,
