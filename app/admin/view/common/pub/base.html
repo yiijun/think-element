@@ -56,6 +56,7 @@
                 axios.post('',{page:this.page}).then(function (response) {
                     if(response.data.code == 200){
                         _this.data = response.data.data.list
+                        _this.count = response.data.data.count
                         console.log(_this.data)
                     }else{
                         this.$message.error('初始化数据失败')

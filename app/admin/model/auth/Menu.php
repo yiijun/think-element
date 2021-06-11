@@ -11,13 +11,12 @@ class Menu extends Model
         return [
             [
                 'id' => '1',
-                'name' => '是'
+                'name' => '否'
             ],
             [
                 'id' => '2',
-                'name' => '否'
+                'name' => '是'
             ]
-
         ];
     }
 
@@ -26,11 +25,11 @@ class Menu extends Model
         return [
             [
                 'id' => '1',
-                'name' => '是'
+                'name' => '否'
             ],
             [
                 'id' => '2',
-                'name' => '否'
+                'name' => '是'
             ]
 
         ];
@@ -39,6 +38,16 @@ class Menu extends Model
     public function getPidSelect()
     {
         return $this->field('id,name')->where('pid',0)->select();
+    }
+
+    public function getShowAttr($value)
+    {
+        return [1 => '否',2 => '是'][$value];
+    }
+
+    public function getSonAttr($value)
+    {
+         return[0 => '未设置',1 => '否',2 => '是'][$value];
     }
 
 }
