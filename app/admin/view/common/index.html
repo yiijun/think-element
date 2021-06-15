@@ -69,20 +69,20 @@
                 _this.form = {$form|raw}
             },
             onSubmit:function (form) {
-                let _this = this;
+                let _this = this
                 this.$refs[form].validate((valid) => {
                     if (valid) {
                         axios.post(_this.api.post,_this.form).then(function (response) {
                             if(response.data.code == 200){
-                                _this.$message.success({message:response.data.msg,type:'success'});
+                                _this.$message.success({message:response.data.msg,type:'success'})
                                 _this.init()
                                 _this.dialogFormVisible = false
                             }else{
-                                _this.$message.error(response.data.msg);
+                                _this.$message.error(response.data.msg)
                             }
                         })
                     } else {
-                        return false;
+                        return false
                     }
                 });
             },
@@ -94,14 +94,12 @@
                 let _this = this
                 axios.post(_this.api.delete, {"{$pk}":id}).then(function (response) {
                     if(response.data.code == 200){
-                        _this.$message.success({message:response.data.msg,type:'success'});
+                        _this.$message.success({message:response.data.msg,type:'success'})
                         _this.init()
                     }else{
-                        _this.$message.error(response.data.msg);
+                        _this.$message.error(response.data.msg)
                     }
-                }).catch(function (error) {
-                    console.log(error)
-                });
+                })
             },
             //批量删除
             onDeletes:function () {
@@ -113,11 +111,11 @@
                 }
                 axios.post(_this.api.deletes, {ids:_this.ids}).then(function (response) {
                     if(response.data.code == 200){
-                        _this.$message.success({message:response.data.msg,type:'success'});
+                        _this.$message.success({message:response.data.msg,type:'success'})
                         _this.init()
-                        _this.multipleSelection = [];
+                        _this.multipleSelection = []
                     }else{
-                        _this.$message.error(response.data.msg);
+                        _this.$message.error(response.data.msg)
                     }
                 })
             },
@@ -125,10 +123,10 @@
                 let _this = this
                 axios.post(_this.api.index, {search:_this.search,page:_this.page}).then(function (response) {
                     if(response.data.code == 200){
-                        _this.$message.success({message:response.data.msg,type:'success'});
+                        _this.$message.success({message:response.data.msg,type:'success'})
                         _this.data = response.data.data.list
                     }else{
-                        _this.$message.error(response.data.msg);
+                        _this.$message.error(response.data.msg)
                     }
                 })
             },
@@ -139,14 +137,14 @@
             toggleSelection(rows) {
                 if (rows) {
                     rows.forEach(function (row) {
-                        this.$refs.multipleTable.toggleRowSelection(row);
+                        this.$refs.multipleTable.toggleRowSelection(row)
                     });
                 } else {
-                    this.$refs.multipleTable.clearSelection();
+                    this.$refs.multipleTable.clearSelection()
                 }
             },
             handleSelectionChange(val) {
-                this.multipleSelection = val;
+                this.multipleSelection = val
             },
         }
     }
