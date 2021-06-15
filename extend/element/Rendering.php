@@ -82,8 +82,10 @@ class Rendering
         $table_html .= '<el-table-column fixed="right" label="操作" width="120">' . PHP_EOL .
             '<template #default="scope">' . PHP_EOL .
             '<el-button type="info" icon="el-icon-edit" @click="onEdit(scope.row)"></el-button>' . PHP_EOL .
-            '<el-button type="danger" icon="el-icon-delete" @click="onDelete(scope.row.' . $this->pk . ')"></el-button>' . PHP_EOL . '</template>' . PHP_EOL
-            . '</el-table-column>';
+            '<el-popconfirm title="确定删除吗？" @confirm="onDelete(scope.row.' . $this->pk . ')">' . PHP_EOL .
+            '<template #reference><el-button type="danger" icon="el-icon-delete"></el-button></template>' . PHP_EOL.
+            '</el-popconfirm>' . PHP_EOL.
+            '</template></el-table-column>';
         $table_html .= ' </el-table>';
         $form_html .= '</el-form>';
 

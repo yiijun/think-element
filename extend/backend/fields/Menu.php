@@ -46,7 +46,7 @@ class Menu
             'prop' => [
                 'table_show' => false,
                 'search' => '=',
-                'is_null' => true,
+                'is_null' => false,
                 'trigger' => 'change',
                 'filterable' => true,
                 'emitPath' => 'false',

@@ -9,15 +9,19 @@
 <el-form label-width="auto">
     <div class="el-search-main">
         {$search_html|raw}
-
         <div class="el-form-item"><el-button type="primary" size="mini" @click="onSearch">查询</el-button></div>
-        <div class="el-form-item"><el-button type="warning" size="mini">重置</el-button></div>
+        <div class="el-form-item"><el-button type="warning" size="mini" @click="onReset">重置</el-button></div>
     </div>
 
 </el-form>
 
-    <el-button type="primary" @click="dialogFormVisible = true" icon="el-icon-plus">添加</el-button>
-    <el-button type="danger"  @click="dialogFormVisible = true" icon="el-icon-delete">批量删除</el-button>
+    <el-button type="primary" @click="onAdd" icon="el-icon-plus">添加</el-button>
+
+    <el-popconfirm title="这是一段内容确定删除吗？"  @confirm="onDeletes">
+        <template #reference>
+            <el-button type="danger"   icon="el-icon-delete">批量删除</el-button>
+        </template>
+    </el-popconfirm>
 
     <!--渲染表单，表单总是以弹窗的形式来表现-->
     <el-dialog title="添加/修改" v-model="dialogFormVisible">
@@ -50,25 +54,34 @@
         form:{$form|raw},
         search:{$search|raw},
         rules:{$rules|raw},
+        api:{
+            post:'{:url("$controller/post")}',
+            delete:'{:url("$controller/delete")}',
+            deletes:'{:url("$controller/deletes")}',
+            index:'{:url("$controller/index")}',
+        }
     }
     function f(){
         return {
+            onAdd:function () {
+                let _this = this
+                _this.dialogFormVisible = true
+                _this.form = {$form|raw}
+            },
             onSubmit:function (form) {
                 let _this = this;
                 this.$refs[form].validate((valid) => {
                     if (valid) {
-                        axios.post('{:url("$controller/post")}',_this.form).then(function (response) {
+                        axios.post(_this.api.post,_this.form).then(function (response) {
                             if(response.data.code == 200){
                                 _this.$message.success({message:response.data.msg,type:'success'});
                                 _this.init()
+                                _this.dialogFormVisible = false
                             }else{
                                 _this.$message.error(response.data.msg);
                             }
-                        }).catch(function (error) {
-                            console.log(error)
-                        });
+                        })
                     } else {
-                        console.log('error submit!!');
                         return false;
                     }
                 });
@@ -79,7 +92,7 @@
             },
             onDelete:function (id) {
                 let _this = this
-                axios.post('{:url("$controller/delete")}', {"{$pk}":id}).then(function (response) {
+                axios.post(_this.api.delete, {"{$pk}":id}).then(function (response) {
                     if(response.data.code == 200){
                         _this.$message.success({message:response.data.msg,type:'success'});
                         _this.init()
@@ -90,22 +103,42 @@
                     console.log(error)
                 });
             },
+            //批量删除
+            onDeletes:function () {
+                let _this = this
+                if(this.multipleSelection.length > 0){
+                    this.multipleSelection.forEach(function (row) {
+                        _this.ids.push(row.{$pk})
+                    })
+                }
+                axios.post(_this.api.deletes, {ids:_this.ids}).then(function (response) {
+                    if(response.data.code == 200){
+                        _this.$message.success({message:response.data.msg,type:'success'});
+                        _this.init()
+                        _this.multipleSelection = [];
+                    }else{
+                        _this.$message.error(response.data.msg);
+                    }
+                })
+            },
             onSearch:function (){
                 let _this = this
-                axios.post('{:url("$controller/index")}', {search:_this.search,page:_this.page}).then(function (response) {
+                axios.post(_this.api.index, {search:_this.search,page:_this.page}).then(function (response) {
                     if(response.data.code == 200){
                         _this.$message.success({message:response.data.msg,type:'success'});
                         _this.data = response.data.data.list
                     }else{
                         _this.$message.error(response.data.msg);
                     }
-                }).catch(function (error) {
-                    console.log(error)
-                });
+                })
+            },
+            onReset:function () {
+                let _this = this
+                _this.search = {$search|raw}
             },
             toggleSelection(rows) {
                 if (rows) {
-                    rows.forEach(row => {
+                    rows.forEach(function (row) {
                         this.$refs.multipleTable.toggleRowSelection(row);
                     });
                 } else {
@@ -114,7 +147,6 @@
             },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
-                console.log(this.multipleSelection)
             },
         }
     }

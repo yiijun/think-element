@@ -114,6 +114,7 @@ trait View
             }
             return  error('操作失败');
         }
+        return  error('错误的请求方式');
     }
 
     public function delete(): \think\response\Json
@@ -127,5 +128,36 @@ trait View
             }
             return  error('删除数据失败');
         }
+        return  error('错误的请求方式');
+    }
+
+    public function deletes()
+    {
+        if($this->request->isPost()){
+            $ids = $this->request->post('ids');
+            if(!is_array($ids) || empty($ids)) {
+                return error('缺失的主键');
+            }
+            //判断模型是否是无限极表格
+            $is_tree = $this->rending->tree_table;
+            //无限极表格需要判断上下级，如果存在上下级节点则不允许删除
+
+            if(true === $is_tree){
+                foreach ($ids as $key => $value){
+                    $row = $this->model->where('pid',$value)->findOrEmpty()?:[];
+                    if(!$row->isEmpty()){
+                        return error('有数据存在下级节点，请先删除！');
+                    }
+                }
+            }
+            $ids = implode(',',$ids);
+
+            $res = $this->model->where('id','in',$ids)->delete();
+            if($res){
+                return success([],200,'删除数据成功');
+            }
+            return  error('删除数据失败');
+        }
+        return  error('错误的请求方式');
     }
 }
