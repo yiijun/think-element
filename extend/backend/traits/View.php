@@ -16,6 +16,8 @@ trait View
 
     public $rending;
 
+    public $pk;
+
     public function __construct(App $app)
     {
         $this->request = $app->request;
@@ -33,8 +35,10 @@ trait View
         }
         $model_path = $model_path . $this->controller;
         $this->model = new $model_path;
-        $this->rending = new Rendering(ucfirst($this->controller));
+        $this->pk = $this->model->getPk();
+        $this->rending = new Rendering(ucfirst($this->controller),$this->pk);
         \think\facade\View::assign('controller', $controller);
+        \think\facade\View::assign('pk', $this->pk);
     }
 
     public function index()
@@ -66,8 +70,6 @@ trait View
                 $list = $this->model->limit($start, 20)->select();
             }
 
-
-
             $count = $this->model->count();
             return success([
                 'list' => $list,
@@ -77,23 +79,32 @@ trait View
         return \think\facade\View::fetch('common/index');
     }
 
-    public function post()
+    public function post(): \think\response\Json
     {
         if ($this->request->isPost()) {
             $data = Request::only($this->request->post());
-            if($data[$this->model->getPk()]){
-
+            if(isset($data[$this->pk]) && !empty($data[$this->pk])){
+                $res = $this->model::update($data,[$this->pk => $data[$this->pk]]);
+            }else{
+                $res = $this->model->save($data);
             }
-            $res = $this->model->save($data);
             if (false !== $res) {
-                return success();
+                return success([],200,'操作成功');
             }
             return  error('操作失败');
         }
     }
 
-    public function del()
+    public function delete(): \think\response\Json
     {
-
+        if($this->request->isPost()){
+            $id = $this->request->post($this->pk);
+            if(empty($id) || !isset($id)) return error('缺失的主键');
+            $res =  $this->model->where('id','=',$id)->delete();
+            if($res){
+                return success([],200,'删除数据成功');
+            }
+            return  error('删除数据失败');
+        }
     }
 }

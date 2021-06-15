@@ -38,17 +38,18 @@ class Menu
             ]
         ],
         [
-            'type' => 'select',
+            'type' => 'CascaderRadio',
             'label' => '父级菜单',
             'key' => 'pid',
             'value' => '',
             'placeholder' => '选择父级菜单',
             'prop' => [
-                'table_show' => true,
+                'table_show' => false,
                 'search' => '=',
                 'is_null' => true,
                 'trigger' => 'change',
                 'filterable' => true,
+                'emitPath' => 'false',
                 'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getPidSelect','id','name'],
             ]
         ],
@@ -74,7 +75,7 @@ class Menu
             'prop' => [
                 'table_show' => true,
                 'search' => 'like',
-                'is_null' => true,
+                'is_null' => false,
                 'trigger' => 'blur',
             ]
         ],
@@ -104,7 +105,7 @@ class Menu
                 'search' => 'like',
                 'is_null' => true,
                 'trigger' => 'blur',
-                'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getShowRadio','id','name'],
+                'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getShowRadio','sid','name'],
             ]
         ],
         [
@@ -117,7 +118,7 @@ class Menu
                 'search' => 'like',
                 'is_null' => true,
                 'trigger' => 'change',
-                'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getSonRadio','id','name'],
+                'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getSonRadio','sid','name'],
             ]
         ],
     ];

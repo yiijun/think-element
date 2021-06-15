@@ -54,13 +54,15 @@
     function f(){
         return {
             onSubmit:function (form) {
+                let _this = this;
                 this.$refs[form].validate((valid) => {
                     if (valid) {
-                        axios.post('{:url("$controller/post")}',this.form).then(function (response) {
+                        axios.post('{:url("$controller/post")}',_this.form).then(function (response) {
                             if(response.data.code == 200){
-                                this.$message.success(response.data.msg)
+                                _this.$message.success({message:response.data.msg,type:'success'});
+                                _this.init()
                             }else{
-                                this.$message.error('初始化数据失败')
+                                _this.$message.error(response.data.msg);
                             }
                         }).catch(function (error) {
                             console.log(error)
@@ -75,6 +77,19 @@
                 this.form = row
                 this.dialogFormVisible = true
             },
+            onDelete:function (id) {
+                let _this = this
+                axios.post('{:url("$controller/delete")}', {"{$pk}":id}).then(function (response) {
+                    if(response.data.code == 200){
+                        _this.$message.success({message:response.data.msg,type:'success'});
+                        _this.init()
+                    }else{
+                        _this.$message.error(response.data.msg);
+                    }
+                }).catch(function (error) {
+                    console.log(error)
+                });
+            },
             toggleSelection(rows) {
                 if (rows) {
                     rows.forEach(row => {
@@ -86,6 +101,7 @@
             },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
+                console.log(this.multipleSelection)
             },
         }
     }
