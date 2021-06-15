@@ -49,10 +49,32 @@ trait View
             $search = $this->request->post('search'); //根据字段信息拼接查询
             //todo 这里要实现查询
             $start = ($page - 1) * 20;
-
+            $where = " 1 = 1 ";
+            if(!empty($search)){
+                $fields = array_column($this->rending->fields,null,'key');
+                foreach ($search as $key => $value){
+                    if(!empty($value)){
+                        switch ($fields[$key]['prop']['search']){
+                            case 'like':
+                                $where .= " and `{$key}` like '%{$value}%'";
+                                break;
+                            case '>':
+                                $where .= " and `{$key}` > {$value}";
+                                break;
+                            case '<':
+                                $where .= " and `{$key}` < {$value}";
+                                break;
+                            default:
+                                $where .= " and `{$key}` = '{$value}'";
+                                break;
+                        }
+                    }
+                }
+            }
             //如果是树形表格,采用递归方式获取表格内容，并且默认上级字段为pid
             if(true === $this->rending->tree_table){
-                $list = $this->model->where('pid',0)->limit($start, 20)->select();
+                $where .= " and pid = 0";
+                $list = $this->model->whereRaw($where)->limit($start, 20)->select();
                 if(!empty($list)){
                     $c = function (&$list) use (&$c){
                         foreach ($list as $key => &$value){
@@ -67,10 +89,9 @@ trait View
                     $list = $c($list);
                 }
             }else{
-                $list = $this->model->limit($start, 20)->select();
+                $list = $this->model->whereRaw($where)->limit($start, 20)->select();
             }
-
-            $count = $this->model->count();
+            $count = $this->model->whereRaw($where)->count();
             return success([
                 'list' => $list,
                 'count' => intval($count)

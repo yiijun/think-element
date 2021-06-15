@@ -10,7 +10,7 @@
     <div class="el-search-main">
         {$search_html|raw}
 
-        <div class="el-form-item"><el-button type="primary" size="mini">查询</el-button></div>
+        <div class="el-form-item"><el-button type="primary" size="mini" @click="onSearch">查询</el-button></div>
         <div class="el-form-item"><el-button type="warning" size="mini">重置</el-button></div>
     </div>
 
@@ -83,6 +83,19 @@
                     if(response.data.code == 200){
                         _this.$message.success({message:response.data.msg,type:'success'});
                         _this.init()
+                    }else{
+                        _this.$message.error(response.data.msg);
+                    }
+                }).catch(function (error) {
+                    console.log(error)
+                });
+            },
+            onSearch:function (){
+                let _this = this
+                axios.post('{:url("$controller/index")}', {search:_this.search,page:_this.page}).then(function (response) {
+                    if(response.data.code == 200){
+                        _this.$message.success({message:response.data.msg,type:'success'});
+                        _this.data = response.data.data.list
                     }else{
                         _this.$message.error(response.data.msg);
                     }

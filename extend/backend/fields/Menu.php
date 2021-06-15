@@ -61,7 +61,7 @@ class Menu
             'placeholder' => '请输入菜单图标',
             'prop' => [
                 'table_show' => true,
-                'search' => 'like',
+                'search' => '=',
                 'is_null' => false,
                 'trigger' => 'blur',
             ]
@@ -74,7 +74,7 @@ class Menu
             'placeholder' => '请输入路由规则',
             'prop' => [
                 'table_show' => true,
-                'search' => 'like',
+                'search' => '=',
                 'is_null' => false,
                 'trigger' => 'blur',
             ]
@@ -86,7 +86,7 @@ class Menu
             'value' => 1,
             'prop' => [
                 'table_show' => true,
-                'search' => 'like',
+                'search' => '>',
                 'is_null' => false,
                 'ext' => [
                     'min' => 0,
@@ -102,7 +102,7 @@ class Menu
             'value' => 1,
             'prop' => [
                 'table_show' => true,
-                'search' => 'like',
+                'search' => '=',
                 'is_null' => true,
                 'trigger' => 'blur',
                 'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getShowRadio','sid','name'],
@@ -115,7 +115,7 @@ class Menu
             'value' => 1,
             'prop' => [
                 'table_show' => true,
-                'search' => 'like',
+                'search' => '=',
                 'is_null' => true,
                 'trigger' => 'change',
                 'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getSonRadio','sid','name'],
