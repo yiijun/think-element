@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/static/backend/css/backend.css">
 </head>
 <body>
-<div id="app" v-cloak>
+<div id="app"  v-cloak>
     <el-container>
         {block name="aside"}{include file="common/pub/aside" /}{/block}
         <el-container>
@@ -38,6 +38,7 @@
         data:[],
         page:1,
         count:0,
+        ids:[],
     }
 
     function common_f() {

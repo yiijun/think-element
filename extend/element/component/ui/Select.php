@@ -2,8 +2,6 @@
 
 namespace element\component\ui;
 
-use think\helper\Arr;
-
 class Select
 {
     public static function html(array $fields, string $form_name = 'form'): string

@@ -12,11 +12,17 @@ class Rendering
 
     public $tree_table = false;
 
-    public function __construct(string $model = '')
+    public $expend_all = false;
+
+    public $pk;
+
+    public function __construct(string $field_name = '', string $pk)
     {
-        $class = "\\backend\\fields\\" . $model;
+        $class = "\\backend\\fields\\" . $field_name;
         $this->fields = $class::FORM_FIELD;
-        $this->tree_table = $class::IS_TREE_TABLE;
+        $this->tree_table = $class::IS_TREE_TABLE ?: false;
+        $this->expend_all = $class::EXPAND_ALL ? 'true ' : 'false';
+        $this->pk = $pk;
         $this->renderForm();
     }
 
@@ -24,21 +30,17 @@ class Rendering
     {
         $form = [];
         $form_html = '<el-form ref="form" :rules="rules" :model="form" label-width="auto">' . PHP_EOL;
-
         $table_html = '<el-table ref="multipleTable" border :data="data" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" ';
-
         if (true === $this->tree_table) {
-            $table_html .= 'lazy';
-            $table_html .= ':load="load"';
-            $table_html .= ':tree-props="{children: \'children\', hasChildren: \'hasChildren\'}"';
+            $table_html .= ' row-key="id"';
+            $table_html .= ' :default-expand-all=' . $this->expend_all;
+            $table_html .= ' :tree-props="{children: \'children\', hasChildren: \'hasChildren\'}"';
         }
-
         $table_html .= '>';
         $table_html .= '<el-table-column type="selection" width="55"></el-table-column>';
         //查询
         $search_html = '';
         $search = [];
-
         $rules = [];
 
         foreach ($this->fields as $field) {
@@ -46,7 +48,20 @@ class Rendering
             $form[$field['key']] = $field['value'];
 
             if (true === $field['prop']['table_show']) {
-                $table_html .= '<el-table-column prop="' . $field['key'] . '" label="' . $field['label'] . '"></el-table-column>';
+                if (isset($field['prop']['callback']) && !empty($field['prop']['callback'])) {
+                    $model = new $field['prop']['callback'][0]();
+                    $option = $model->{$field['prop']['callback'][1]}() ?: [];
+                    $option = json_encode($option ?: [], 256);
+                    $table_html .= '<el-table-column  label="' . $field['label'] . '">
+                        <template #default="scope"> 
+                            <span v-for=\'(item,index) in ' . $option . '\'>
+                            <el-tag v-if="item.' . $field['prop']['callback'][2] . ' == scope.row.' . $field['key'] . '"> {{item.' . $field['prop']['callback'][3] . '}}</el-tag>
+                            </span>
+                        </template>
+                    </el-table-column>';
+                } else {
+                    $table_html .= '<el-table-column prop="' . $field['key'] . '" label="' . $field['label'] . '"></el-table-column>';
+                }
             }
 
             if (isset($field['prop']['search'])) {
@@ -64,12 +79,13 @@ class Rendering
                 ];
             }
         }
-
         $table_html .= '<el-table-column fixed="right" label="操作" width="120">' . PHP_EOL .
             '<template #default="scope">' . PHP_EOL .
             '<el-button type="info" icon="el-icon-edit" @click="onEdit(scope.row)"></el-button>' . PHP_EOL .
-            '<el-button type="danger" icon="el-icon-delete"></el-button>' . PHP_EOL . '</template>' . PHP_EOL
-            . '</el-table-column>';
+            '<el-popconfirm title="确定删除吗？" @confirm="onDelete(scope.row.' . $this->pk . ')">' . PHP_EOL .
+            '<template #reference><el-button type="danger" icon="el-icon-delete"></el-button></template>' . PHP_EOL.
+            '</el-popconfirm>' . PHP_EOL.
+            '</template></el-table-column>';
         $table_html .= ' </el-table>';
         $form_html .= '</el-form>';
 

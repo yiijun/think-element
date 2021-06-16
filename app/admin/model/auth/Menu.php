@@ -10,11 +10,11 @@ class Menu extends Model
     {
         return [
             [
-                'id' => '1',
+                'sid' => 1,
                 'name' => '否'
             ],
             [
-                'id' => '2',
+                'sid' => 2,
                 'name' => '是'
             ]
         ];
@@ -24,30 +24,20 @@ class Menu extends Model
     {
         return [
             [
-                'id' => '1',
+                'sid' => 1,
                 'name' => '否'
             ],
             [
-                'id' => '2',
+                'sid' => 2,
                 'name' => '是'
             ]
 
         ];
     }
 
-    public function getPidSelect()
+    public function getPidSelect() : array
     {
-        return $this->field('id,name')->where('pid',0)->select();
+        $menu =  $this->field('id,name,pid')->select();
+        return tree($menu,0);
     }
-
-    public function getShowAttr($value)
-    {
-        return [1 => '否',2 => '是'][$value];
-    }
-
-    public function getSonAttr($value)
-    {
-         return[0 => '未设置',1 => '否',2 => '是'][$value];
-    }
-
 }

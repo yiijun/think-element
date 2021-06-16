@@ -13,8 +13,16 @@ class Menu
      * @var bool
      * 是否开启树形表格
      */
-   const IS_TREE_TABLE = true;
+    const IS_TREE_TABLE = true;
 
+    /**
+     * 是否展开所有
+     */
+    const EXPAND_ALL = true;
+
+    /**
+     * 定义字段
+     */
     const FORM_FIELD = [
         [
             'type' => 'input',
@@ -30,17 +38,18 @@ class Menu
             ]
         ],
         [
-            'type' => 'select',
+            'type' => 'CascaderRadio',
             'label' => '父级菜单',
             'key' => 'pid',
             'value' => '',
             'placeholder' => '选择父级菜单',
             'prop' => [
-                'table_show' => true,
+                'table_show' => false,
                 'search' => '=',
-                'is_null' => true,
+                'is_null' => false,
                 'trigger' => 'change',
                 'filterable' => true,
+                'emitPath' => 'false',
                 'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getPidSelect','id','name'],
             ]
         ],
@@ -52,7 +61,7 @@ class Menu
             'placeholder' => '请输入菜单图标',
             'prop' => [
                 'table_show' => true,
-                'search' => 'like',
+                'search' => '=',
                 'is_null' => false,
                 'trigger' => 'blur',
             ]
@@ -65,8 +74,8 @@ class Menu
             'placeholder' => '请输入路由规则',
             'prop' => [
                 'table_show' => true,
-                'search' => 'like',
-                'is_null' => true,
+                'search' => '=',
+                'is_null' => false,
                 'trigger' => 'blur',
             ]
         ],
@@ -77,7 +86,7 @@ class Menu
             'value' => 1,
             'prop' => [
                 'table_show' => true,
-                'search' => 'like',
+                'search' => '>',
                 'is_null' => false,
                 'ext' => [
                     'min' => 0,
@@ -93,10 +102,10 @@ class Menu
             'value' => 1,
             'prop' => [
                 'table_show' => true,
-                'search' => 'like',
+                'search' => '=',
                 'is_null' => true,
                 'trigger' => 'blur',
-                'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getShowRadio','id','name'],
+                'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getShowRadio','sid','name'],
             ]
         ],
         [
@@ -106,10 +115,10 @@ class Menu
             'value' => 1,
             'prop' => [
                 'table_show' => true,
-                'search' => 'like',
+                'search' => '=',
                 'is_null' => true,
                 'trigger' => 'change',
-                'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getSonRadio','id','name'],
+                'callback' => ['\\app\\admin\\model\\auth\\Menu', 'getSonRadio','sid','name'],
             ]
         ],
     ];

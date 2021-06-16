@@ -14,3 +14,22 @@ function error(string $msg = '失败',int $code = 0,array $data = []) : \think\r
         'data' => $data
     ]);
 }
+
+/**
+ * @param $data
+ * @param int $pid
+ * @param int $deep
+ * @return array
+ */
+function tree($data, int $pid, int $deep = 0): array
+{
+    $tree = [];
+    foreach ($data as $row) {
+        if($row['pid'] == $pid) {
+            $row['deep'] = $deep;
+            $row['children'] = tree($data, $row['id'], $deep + 1);
+            $tree[] = $row;
+        }
+    }
+    return $tree;
+}

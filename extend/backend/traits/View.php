@@ -16,6 +16,8 @@ trait View
 
     public $rending;
 
+    public $pk;
+
     public function __construct(App $app)
     {
         $this->request = $app->request;
@@ -33,8 +35,10 @@ trait View
         }
         $model_path = $model_path . $this->controller;
         $this->model = new $model_path;
-        $this->rending = new Rendering(ucfirst($this->controller));
+        $this->pk = $this->model->getPk();
+        $this->rending = new Rendering(ucfirst($this->controller),$this->pk);
         \think\facade\View::assign('controller', $controller);
+        \think\facade\View::assign('pk', $this->pk);
     }
 
     public function index()
@@ -45,14 +49,49 @@ trait View
             $search = $this->request->post('search'); //根据字段信息拼接查询
             //todo 这里要实现查询
             $start = ($page - 1) * 20;
-
+            $where = " 1 = 1 ";
+            if(!empty($search)){
+                $fields = array_column($this->rending->fields,null,'key');
+                foreach ($search as $key => $value){
+                    if(!empty($value)){
+                        switch ($fields[$key]['prop']['search']){
+                            case 'like':
+                                $where .= " and `{$key}` like '%{$value}%'";
+                                break;
+                            case '>':
+                                $where .= " and `{$key}` > {$value}";
+                                break;
+                            case '<':
+                                $where .= " and `{$key}` < {$value}";
+                                break;
+                            default:
+                                $where .= " and `{$key}` = '{$value}'";
+                                break;
+                        }
+                    }
+                }
+            }
             //如果是树形表格,采用递归方式获取表格内容，并且默认上级字段为pid
             if(true === $this->rending->tree_table){
-                $list = $this->model->where('pid',0)->limit($start, 20)->select();
+                $where .= " and pid = 0";
+                $list = $this->model->whereRaw($where)->limit($start, 20)->select();
+                if(!empty($list)){
+                    $c = function (&$list) use (&$c){
+                        foreach ($list as $key => &$value){
+                            //根据父级别ID查询
+                            $value['children'] = $this->model->where('pid',$value['id'])->select();
+                            if(!empty($value['children'])){
+                                $c($value['children']);
+                            }
+                        }
+                        return $list;
+                    };
+                    $list = $c($list);
+                }
+            }else{
+                $list = $this->model->whereRaw($where)->limit($start, 20)->select();
             }
-
-            $list = $this->model->limit($start, 20)->select();
-            $count = $this->model->count();
+            $count = $this->model->whereRaw($where)->count();
             return success([
                 'list' => $list,
                 'count' => intval($count)
@@ -61,23 +100,64 @@ trait View
         return \think\facade\View::fetch('common/index');
     }
 
-    public function post()
+    public function post(): \think\response\Json
     {
         if ($this->request->isPost()) {
             $data = Request::only($this->request->post());
-            if($data[$this->model->getPk()]){
-
+            if(isset($data[$this->pk]) && !empty($data[$this->pk])){
+                $res = $this->model::update($data,[$this->pk => $data[$this->pk]]);
+            }else{
+                $res = $this->model->save($data);
             }
-            $res = $this->model->save($data);
             if (false !== $res) {
-                return success();
+                return success([],200,'操作成功');
             }
             return  error('操作失败');
         }
+        return  error('错误的请求方式');
     }
 
-    public function del()
+    public function delete(): \think\response\Json
     {
+        if($this->request->isPost()){
+            $id = $this->request->post($this->pk);
+            if(empty($id) || !isset($id)) return error('缺失的主键');
+            $res =  $this->model->where('id','=',$id)->delete();
+            if($res){
+                return success([],200,'删除数据成功');
+            }
+            return  error('删除数据失败');
+        }
+        return  error('错误的请求方式');
+    }
 
+    public function deletes()
+    {
+        if($this->request->isPost()){
+            $ids = $this->request->post('ids');
+            if(!is_array($ids) || empty($ids)) {
+                return error('缺失的主键');
+            }
+            //判断模型是否是无限极表格
+            $is_tree = $this->rending->tree_table;
+            //无限极表格需要判断上下级，如果存在上下级节点则不允许删除
+
+            if(true === $is_tree){
+                foreach ($ids as $key => $value){
+                    $row = $this->model->where('pid',$value)->findOrEmpty()?:[];
+                    if(!$row->isEmpty()){
+                        return error('有数据存在下级节点，请先删除！');
+                    }
+                }
+            }
+            $ids = implode(',',$ids);
+
+            $res = $this->model->where('id','in',$ids)->delete();
+            if($res){
+                return success([],200,'删除数据成功');
+            }
+            return  error('删除数据失败');
+        }
+        return  error('错误的请求方式');
     }
 }
