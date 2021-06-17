@@ -9,7 +9,7 @@
 <el-form label-width="auto">
     <div class="el-search-main">
         {$search_html|raw}
-        <div class="el-form-item"><el-button type="primary" size="mini" @click="onSearch">查询</el-button></div>
+        <div class="el-form-item"><el-button type="primary" size="mini" @click="onSearch(1)">查询</el-button></div>
         <div class="el-form-item"><el-button type="warning" size="mini" @click="onReset">重置</el-button></div>
     </div>
 
@@ -42,7 +42,11 @@
             <el-pagination
                     background
                     layout="prev, pager, next"
-                    :total="count">
+                    :total="count"
+                    :page-size="20"
+                    @current-change="init"
+
+            >
             </el-pagination>
         </div>
     </div>
@@ -119,8 +123,12 @@
                     }
                 })
             },
-            onSearch:function (){
+            onSearch:function (page){
                 let _this = this
+                if(!page){
+                    page = 1
+                }
+                _this.page = page
                 axios.post(_this.api.index, {search:_this.search,page:_this.page}).then(function (response) {
                     if(response.data.code == 200){
                         _this.$message.success({message:response.data.msg,type:'success'})

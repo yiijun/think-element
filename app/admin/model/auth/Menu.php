@@ -4,7 +4,7 @@ use think\Model;
 
 class Menu extends Model
 {
-    protected $table = 'td_auth_menu';
+    protected $name = 'auth_menu';
 
     public function getShowRadio()
     {
@@ -39,5 +39,24 @@ class Menu extends Model
     {
         $menu =  $this->field('id,name,pid')->select();
         return tree($menu,0);
+    }
+
+    public function getMenus()
+    {
+        return $this
+            ->field('id,name,pid,icon,route')
+            ->where('show',2)
+            ->order('weigh','asc')
+            ->select();
+    }
+
+    public function getRowByRoute(string  $route = '')
+    {
+        return $this->where("route",$route)->findOrEmpty();
+    }
+
+    public function getRowById($id)
+    {
+        return $this->where("id",$id)->findOrEmpty();
     }
 }

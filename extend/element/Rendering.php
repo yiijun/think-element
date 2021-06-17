@@ -2,7 +2,7 @@
 
 namespace element;
 
-
+use app\admin\model\auth\Menu;
 use element\component\hook\Hook;
 use think\facade\View;
 
@@ -20,13 +20,12 @@ class Rendering
     {
         $class = "\\backend\\fields\\" . $field_name;
         $this->fields = $class::FORM_FIELD;
-        $this->tree_table = $class::IS_TREE_TABLE ?: false;
-        $this->expend_all = $class::EXPAND_ALL ? 'true ' : 'false';
+        $this->tree_table = defined("$class::IS_TREE_TABLE") ? $class::IS_TREE_TABLE : false;
+        $this->expend_all = defined("$class::EXPAND_ALL") && $class::EXPAND_ALL == true  ? 'true' : 'false';
         $this->pk = $pk;
-        $this->renderForm();
     }
 
-    public function renderForm()
+    public function html()
     {
         $form = [];
         $form_html = '<el-form ref="form" :rules="rules" :model="form" label-width="auto">' . PHP_EOL;
@@ -79,12 +78,13 @@ class Rendering
                 ];
             }
         }
+
         $table_html .= '<el-table-column fixed="right" label="操作" width="120">' . PHP_EOL .
             '<template #default="scope">' . PHP_EOL .
             '<el-button type="info" icon="el-icon-edit" @click="onEdit(scope.row)"></el-button>' . PHP_EOL .
             '<el-popconfirm title="确定删除吗？" @confirm="onDelete(scope.row.' . $this->pk . ')">' . PHP_EOL .
-            '<template #reference><el-button type="danger" icon="el-icon-delete"></el-button></template>' . PHP_EOL.
-            '</el-popconfirm>' . PHP_EOL.
+            '<template #reference><el-button type="danger" icon="el-icon-delete"></el-button></template>' . PHP_EOL .
+            '</el-popconfirm>' . PHP_EOL .
             '</template></el-table-column>';
         $table_html .= ' </el-table>';
         $form_html .= '</el-form>';
@@ -97,5 +97,63 @@ class Rendering
             'search' => json_encode($search, JSON_UNESCAPED_UNICODE),
             'rules' => json_encode($rules, JSON_UNESCAPED_UNICODE)
         ]);
+    }
+
+    /**
+     * 渲染菜单
+     */
+    public function aside()
+    {
+        $model = new Menu();
+        View::assign('aside_html',$this->treeAside(
+            tree($model->getMenus(),0)
+        ));
+    }
+
+    /**
+     * @param array $menus
+     * @return string
+     * 递归菜单
+     */
+    private function treeAside(array $menus) : string
+    {
+        $html = '';
+        if(is_array($menus)) {
+            foreach ($menus as $row) {
+                if(empty($row['children'])) {
+                    $html .= '<a href="' . $row['route'] . '"><el-menu-item index="' . $row['id'] . '"><template #title><i class="' . $row['icon'] . '"></i><span>' . $row['name'] . '</span></template></el-menu-item></a>';
+                } else {
+                    $html .= '<el-submenu index="' . $row['id'] . '"><template #title><i class="' . $row['icon'] . '"></i> <span>' . $row['name'] . '</span></template>';
+                    $html .= $this->treeAside($row['children']);
+                    $html .= '</el-submenu>';
+                }
+            }
+        }
+        return $html;
+    }
+
+    /**
+     * @param $row
+     * @param $model
+     * 无限极面包屑
+     */
+    public function breadcrumb($row,$model)
+    {
+        $parents = function($pid) use ($model, &$parents) {
+            static $data = [];
+            if($pid != 0) $row = $model->getRowById($pid);
+            if(!empty($row)) {
+                $data[] = $row;
+                $parents($row['pid']);
+            }
+            return $data;
+        };
+        $data = isset($row['pid']) ? $parents($row['pid']) : [];
+        array_unshift($data, $row);
+        $breadcrumb_html = '';
+        foreach (array_reverse($data) as $key => $value) {
+            $breadcrumb_html .= isset($value['route']) ? ' <el-breadcrumb-item><a href="' . $value['route'] . '">' . $value['name'] . '</a></el-breadcrumb-item>' : '';
+        }
+        View::assign('breadcrumb_html',$breadcrumb_html);
     }
 }

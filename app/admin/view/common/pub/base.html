@@ -40,7 +40,6 @@
         count:0,
         ids:[],
     }
-
     function common_f() {
         return {
             hideAside: function () {
@@ -52,9 +51,13 @@
                 this.aside_width = '230px'
             },
             //初始化函数，获取表格数据
-            init:function () {
+            init:function (page) {
+                if(!page){
+                    page = 1
+                }
                 let _this = this
-                axios.post('',{page:this.page}).then(function (response) {
+                _this.page = page
+                axios.post('',{search:_this.search,page:_this.page}).then(function (response) {
                     if(response.data.code == 200){
                         _this.data = response.data.data.list
                         _this.count = response.data.data.count
