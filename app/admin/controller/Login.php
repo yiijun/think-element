@@ -36,8 +36,13 @@ class Login
             $admin = $adminModel->rowByUname($uname);
             if (!$admin) return error('不存在的用户');
             if (!password_verify($pass, $admin['pass'])) return error('密码不正确');
-            Session::set('user_info',[
-                'aid' => $admin['aid'],
+            $adminModel::update([
+                'login_time' => date('Y-m-d H:i:s'),
+                'ip' => $_SERVER['REMOTE_ADDR']
+            ]);
+            //更新登陆时间
+            Session::set('login_info',[
+                'aid' => $admin['id'],
                 'uname' => $admin['uname']
             ]);
             return success([],200,'登陆成功');
