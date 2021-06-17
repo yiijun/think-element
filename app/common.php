@@ -27,7 +27,10 @@ function tree($data, int $pid, int $deep = 0): array
     foreach ($data as $row) {
         if($row['pid'] == $pid) {
             $row['deep'] = $deep;
-            $row['children'] = tree($data, $row['id'], $deep + 1);
+            $children = tree($data, $row['id'], $deep + 1);
+            if(!empty($children)){
+                $row['children'] = $children;
+            }
             $tree[] = $row;
         }
     }

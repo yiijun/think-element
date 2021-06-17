@@ -1,7 +1,9 @@
 <?php
 namespace app\admin\controller\auth;
 
-class Menu
+use app\admin\controller\base\Base;
+
+class Menu extends Base
 {
     use \backend\traits\View;
 }

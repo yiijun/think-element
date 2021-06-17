@@ -83,7 +83,7 @@ class Menu
             'type' => 'number',
             'label' => '权重',
             'key' => 'weigh',
-            'value' => 1,
+            'value' => 0,
             'prop' => [
                 'table_show' => true,
                 'search' => '>',
@@ -99,7 +99,7 @@ class Menu
             'type' => 'radio',
             'label' => '显示',
             'key' => 'show',
-            'value' => 1,
+            'value' => 2,
             'prop' => [
                 'table_show' => true,
                 'search' => '=',
