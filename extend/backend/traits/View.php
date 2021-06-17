@@ -2,18 +2,31 @@
 
 namespace backend\traits;
 
+use element\facade\Html;
 use think\facade\Request;
 use think\response\Json;
 
 trait View
 {
-    /**
-     * View constructor.
-     */
+    public $model;
+
+    public $fields;
+
+    public $tree_table = false;
+
     public function __construct()
     {
         parent::__construct();
-        $this->rending->html();
+        $model_path = '\\app\\admin\\model\\';
+        $model_name = explode('.', $this->controller);
+        foreach ($model_name as $key => $value) $model_path .= $value . '\\';
+        $model_path = trim($model_path, '\\');
+        $this->model = new $model_path;
+        $this->pk = $this->model->getPk();
+        $field_class = "\\backend\\fields\\" . end($model_name);
+        $this->fields = $field_class::FORM_FIELD;
+        $this->tree_table = defined("$field_class::IS_TREE_TABLE") ? $field_class::IS_TREE_TABLE : false;
+        Html::render($field_class, $this->fields, $this->tree_table, $this->pk);
     }
 
     /**
@@ -27,7 +40,7 @@ trait View
             $start = ($page - 1) * 20;
             $where = " 1 = 1 ";
             if (!empty($search)) {
-                $fields = array_column($this->rending->fields, null, 'key');
+                $fields = array_column($this->fields, null, 'key');
                 foreach ($search as $key => $value) {
                     if (!empty($value)) {
                         switch ($fields[$key]['prop']['search']) {
@@ -48,7 +61,7 @@ trait View
                 }
             }
             //如果是树形表格,采用递归方式获取表格内容，并且默认上级字段为pid
-            if (true === $this->rending->tree_table) {
+            if (true === $this->tree_table) {
                 $where .= " and pid = 0";
                 $list = $this->model->whereRaw($where)->limit($start, 20)->select();
                 if (!empty($list)) {
@@ -116,14 +129,14 @@ trait View
     /**
      * @return Json
      */
-    public function deletes() : Json
+    public function deletes(): Json
     {
         if (Request::isPost()) {
             $ids = Request::post('ids');
             if (!is_array($ids) || empty($ids)) {
                 return error('缺失的主键');
             }
-            $is_tree = $this->rending->tree_table;
+            $is_tree = $this->tree_table;
             if (true === $is_tree) {
                 foreach ($ids as $key => $value) {
                     $row = $this->model->where('pid', $value)->findOrEmpty() ?: [];

@@ -2,6 +2,7 @@
 namespace app\admin\controller\auth;
 
 use app\admin\controller\base\Base;
+use think\facade\Request;
 
 class Role extends Base {
 
@@ -9,8 +10,8 @@ class Role extends Base {
 
     public function post(): \think\response\Json
     {
-        if ($this->request->isPost()) {
-            $data = $this->request->post();
+        if (Request::isPost()) {
+            $data = Request::post();
             $routes = [];
             foreach ($data['selected'] as  $value){
                 foreach ($value as  $v) $routes[] = $v;
