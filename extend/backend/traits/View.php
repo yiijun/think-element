@@ -3,6 +3,7 @@
 namespace backend\traits;
 
 use element\facade\Html;
+use element\facade\Rending;
 use think\facade\Request;
 use think\response\Json;
 
@@ -18,15 +19,21 @@ trait View
     {
         parent::__construct();
         $model_path = '\\app\\admin\\model\\';
-        $model_name = explode('.', $this->controller);
-        foreach ($model_name as $key => $value) $model_path .= $value . '\\';
+        $json_path = root_path() . 'public/static/backend/json/';
+        $model_name = explode('.', strtolower($this->controller));
+        foreach ($model_name as $key => $value) {
+            $model_path .= $value . '\\';
+            $json_path .= $value . '/';
+        }
         $model_path = trim($model_path, '\\');
+        $json_path = rtrim($json_path, '/');
+        $json_path .= '.json';
         $this->model = new $model_path;
         $this->pk = $this->model->getPk();
-        $field_class = "\\backend\\fields\\" . end($model_name);
-        $this->fields = $field_class::FORM_FIELD;
-        $this->tree_table = defined("$field_class::IS_TREE_TABLE") ? $field_class::IS_TREE_TABLE : false;
-        Html::render($field_class, $this->fields, $this->tree_table, $this->pk);
+        $fields = file_get_contents($json_path);
+        $this->fields = json_decode($fields, true);
+        $this->tree_table = $this->fields['tree_table'];
+        Rending::table_form_search_rules($this->fields, $this->tree_table, $this->pk);
     }
 
     /**

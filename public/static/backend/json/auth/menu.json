@@ -1,0 +1,118 @@
+{
+  "fields": [
+    {
+      "type": "input",
+      "label": "菜单名称",
+      "key": "name",
+      "value": "",
+      "placeholder": "请输入菜单名称",
+      "prop": {
+        "table_show": true,
+        "search": "like",
+        "is_null": true,
+        "trigger": "blur"
+      }
+    },
+    {
+      "type": "CascaderRadio",
+      "label": "父级菜单",
+      "key": "pid",
+      "value": "",
+      "placeholder": "选择父级菜单",
+      "prop": {
+        "table_show": false,
+        "search": "=",
+        "is_null": false,
+        "trigger": "change",
+        "filterable": true,
+        "emitPath": "false",
+        "callback": [
+          "\\app\\admin\\model\\auth\\Menu",
+          "getPidSelect",
+          "id",
+          "name"
+        ]
+      }
+    },
+    {
+      "type": "input",
+      "label": "Icon",
+      "key": "icon",
+      "value": "",
+      "placeholder": "请输入菜单图标",
+      "prop": {
+        "table_show": true,
+        "search": "=",
+        "is_null": false,
+        "trigger": "blur"
+      }
+    },
+    {
+      "type": "input",
+      "label": "路由",
+      "key": "route",
+      "value": "",
+      "placeholder": "请输入路由规则",
+      "prop": {
+        "table_show": true,
+        "search": "=",
+        "is_null": false,
+        "trigger": "blur"
+      }
+    },
+    {
+      "type": "number",
+      "label": "权重",
+      "key": "weigh",
+      "value": 0,
+      "prop": {
+        "table_show": true,
+        "search": ">",
+        "is_null": false,
+        "ext": {
+          "min": 0,
+          "max": 9999999,
+          "step": 1
+        }
+      }
+    },
+    {
+      "type": "radio",
+      "label": "显示",
+      "key": "show",
+      "value": 2,
+      "prop": {
+        "table_show": true,
+        "search": "=",
+        "is_null": true,
+        "trigger": "blur",
+        "callback": [
+          "\\app\\admin\\model\\auth\\Menu",
+          "getShowRadio",
+          "sid",
+          "name"
+        ]
+      }
+    },
+    {
+      "type": "radio",
+      "label": "子菜单",
+      "key": "son",
+      "value": 1,
+      "prop": {
+        "table_show": true,
+        "search": "=",
+        "is_null": true,
+        "trigger": "change",
+        "callback": [
+          "\\app\\admin\\model\\auth\\Menu",
+          "getSonRadio",
+          "sid",
+          "name"
+        ]
+      }
+    }
+  ],
+  "tree_table":false,
+  "expand_all": false
+}

@@ -2,10 +2,11 @@
 
 namespace app\admin\controller\base;
 
+use element\facade\Rending;
+use think\App;
 use app\admin\model\auth\Menu;
 use element\facade\Aside;
 use element\facade\Breadcrumb;
-use think\App;
 use think\facade\Request;
 use think\facade\Session;
 use think\facade\View;
@@ -30,9 +31,8 @@ class Base
         $modelMenu = new Menu();
         $current_menu = '/admin/' . strtolower($this->controller) . '/' . strtolower($this->action);
         $current_menu = $modelMenu->getRowByRoute($current_menu);
-        Aside::render();
-        Breadcrumb::render($current_menu,$modelMenu);
-
+        Rending::aside();
+        Rending::breadcrumb($current_menu,$modelMenu);
         View::assign([
             'controller' => $this->controller,
             'pk' => $this->pk,
