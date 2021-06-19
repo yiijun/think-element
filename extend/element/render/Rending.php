@@ -83,11 +83,12 @@ class  Rending
     }
 
 
-    public function aside()
+    public function aside($routes = [])
     {
         $model = new Menu();
+        $menus = $model->getMenus($routes);
         View::assign('aside_html', $this->treeAside(
-            tree($model->getMenus(), 0)
+            tree($menus, 0)
         ));
     }
 

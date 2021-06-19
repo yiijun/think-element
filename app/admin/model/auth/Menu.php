@@ -41,13 +41,23 @@ class Menu extends Model
         return tree($menu,0);
     }
 
-    public function getMenus()
+    public function getMenus($roles = '')
     {
-        return $this
-            ->field('id,name,pid,icon,route')
-            ->where('show',2)
-            ->order('weigh','asc')
-            ->select();
+        if(empty($roles)){
+            return $this
+                ->field('id,name,pid,icon,route')
+                ->where('show',2)
+                ->order('weigh','asc')
+                ->select();
+        }else{
+            return $this
+                ->field('id,name,pid,icon,route')
+                ->where('show',2)
+                ->where('id','in',$roles)
+                ->order('weigh','asc')
+                ->select();
+        }
+
     }
 
     public function getRowByRoute(string  $route = '')
