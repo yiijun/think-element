@@ -18,6 +18,7 @@ class Role extends Base {
             }
             $data['routes'] = implode(',',array_unique($routes));
             $data['selected'] = json_encode($data['selected']);
+            var_dump($data);exit;
 
             if(isset($data[$this->pk]) && !empty($data[$this->pk])){
                 $res = $this->model::update($data,[$this->pk => $data[$this->pk]]);

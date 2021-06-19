@@ -39,7 +39,7 @@ class Login
             $adminModel::update([
                 'login_time' => date('Y-m-d H:i:s'),
                 'ip' => $_SERVER['REMOTE_ADDR']
-            ]);
+            ],['uname' => $admin['uname']]);
             //更新登陆时间
             Session::set('login_info',[
                 'aid' => $admin['id'],
@@ -47,5 +47,14 @@ class Login
             ]);
             return success([],200,'登陆成功');
         }
+    }
+
+    public function logout()
+    {
+        if(Request::isPost()){
+            Session::delete("login_info");
+            return success();
+        }
+        return  error('错误的请求方式');
     }
 }

@@ -6,8 +6,6 @@ class Role extends Model
 {
     protected $name = 'auth_role';
 
-    protected $pk = 'aid';
-
     public function getSelectedAttr($value,$data)
     {
         return json_decode($data['selected'],true);

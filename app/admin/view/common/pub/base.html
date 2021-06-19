@@ -50,11 +50,22 @@
                 this.isCollapse = false
                 this.aside_width = '230px'
             },
+            onLogout:function () {
+                let _this = this
+                axios.post('{:url("Login/logout")}',{id:1}).then(function (response) {
+                    if(response.data.code == 200){
+                        _this.$message.error('退出成功')
+                        setTimeout(function () {
+                            window.location.href='{:url("login/index")}'
+                        },2000)
+                    }else{
+                        _this.$message.error('初始化数据失败')
+                    }
+                })
+            },
             //初始化函数，获取表格数据
             init:function (page) {
-                if(!page){
-                    page = 1
-                }
+                if(!page){page = 1}
                 let _this = this
                 _this.page = page
                 axios.post('',{search:_this.search,page:_this.page}).then(function (response) {
@@ -63,7 +74,7 @@
                         _this.count = response.data.data.count
                         console.log(_this.data)
                     }else{
-                        this.$message.error('初始化数据失败')
+                        _this.$message.error('初始化数据失败')
                     }
                 }).catch(function (error) {
                     console.log(error)

@@ -4,6 +4,7 @@ namespace backend\traits;
 
 use element\facade\Html;
 use element\facade\Rending;
+use think\App;
 use think\facade\Request;
 use think\response\Json;
 
@@ -15,12 +16,14 @@ trait View
 
     public $tree_table = false;
 
-    public function __construct()
+    public $pk = 'id';
+
+    public function __construct(App $app)
     {
         parent::__construct();
         $model_path = '\\app\\admin\\model\\';
         $json_path = root_path() . 'public/static/backend/json/';
-        $model_name = explode('.', strtolower($this->controller));
+        $model_name = explode('.', strtolower($app->request->controller()));
         foreach ($model_name as $key => $value) {
             $model_path .= $value . '\\';
             $json_path .= $value . '/';
@@ -29,6 +32,7 @@ trait View
         $json_path = rtrim($json_path, '/');
         $json_path .= '.json';
         $this->model = new $model_path;
+
         $this->pk = $this->model->getPk();
         $fields = file_get_contents($json_path);
         $this->fields = json_decode($fields, true);
@@ -47,7 +51,7 @@ trait View
             $start = ($page - 1) * 20;
             $where = " 1 = 1 ";
             if (!empty($search)) {
-                $fields = array_column($this->fields, null, 'key');
+                $fields = array_column($this->fields['fields'], null, 'key');
                 foreach ($search as $key => $value) {
                     if (!empty($value)) {
                         switch ($fields[$key]['prop']['search']) {
@@ -93,6 +97,7 @@ trait View
                 'count' => intval($count)
             ], 200, '加载数据成功');
         }
+        \think\facade\View::assign('pk',$this->pk);
         return \think\facade\View::fetch('common/index');
     }
 

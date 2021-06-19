@@ -15,12 +15,13 @@ class CascaderCheckBox
         $options = $model->{$fields['prop']['callback'][1]}() ?: [];
         $options = json_encode($options ?: [], 256);
         return
-            '<el-form-item prop="' . $fields['key'] . '" label="' . $fields['label'] . '">' . PHP_EOL .
-            ' <el-cascader '.PHP_EOL.
-                ':options=\'' . $options . '\' v-model="'.$form_name.'.'.$fields['key'].'"'.PHP_EOL.
-                'placeholder="'.$fields['placeholder'].'"'.PHP_EOL.
-                ':props=\'{multiple:true,emitPath:'.$fields['prop']['emitPath'].',label:"' . $fields['prop']['callback'][3] . '",value:"' . $fields['prop']['callback'][2] . '"}\' 
-                clearable>' . PHP_EOL .
+            '<el-form-item prop="' . $fields['key'] . '"  label="' . $fields['label'] . '">' . PHP_EOL .
+            ' <el-cascader' . PHP_EOL .
+            'v-model="' . $form_name . '.' . $fields['key'] . '"' .
+            ':options=\'' . $options . '\' ' . PHP_EOL .
+            'placeholder="' . $fields['placeholder'] . '"' . PHP_EOL .
+            ':props=\'{children:"children",multiple:true,label:"' . $fields['prop']['callback'][3] . '",value:"' . $fields['prop']['callback'][2] . '"}\' 
+                clearable filterable>' . PHP_EOL .
             '</el-cascader>' . PHP_EOL .
             '</el-form-item>' . PHP_EOL;
     }
