@@ -13,13 +13,9 @@ class Role extends Base {
         if (Request::isPost()) {
             $data = Request::post();
             $routes = [];
-            foreach ($data['selected'] as  $value){
-                foreach ($value as  $v) $routes[] = $v;
-            }
+            foreach ($data['selected'] as  $value) foreach ($value as  $v) $routes[] = $v;
             $data['routes'] = implode(',',array_unique($routes));
             $data['selected'] = json_encode($data['selected']);
-            var_dump($data);exit;
-
             if(isset($data[$this->pk]) && !empty($data[$this->pk])){
                 $res = $this->model::update($data,[$this->pk => $data[$this->pk]]);
             }else{

@@ -14,4 +14,9 @@ class Index extends Base
     {
         return View::fetch();
     }
+
+    public function jurisdiction()
+    {
+        return View::fetch();
+    }
 }

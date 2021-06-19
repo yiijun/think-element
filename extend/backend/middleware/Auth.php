@@ -52,29 +52,41 @@ class  Auth
         $current_menu = '/admin/' . strtolower($controller) . '/' . strtolower($action);
         $current_menu = $modelMenu->getRowByRoute($current_menu);
         $login_id = $request->login_info['aid'];
-        Rending::aside();
         Rending::breadcrumb($current_menu,$modelMenu);
+
         View::assign([
             'controller' => $controller,
             'current_route_id' => $current_menu['id']??1,
         ]);
-        if(in_array($login_id,$this->white_admin_ids)){
-            return true;
-        }
-        if(in_array($controller,$this->white_controller)){
-            return  true;
-        }
+
+        //获取当前用户权限
         $roles  = Db::name('admin')
             ->alias('a')
             ->where("a.id",$login_id)
             ->leftJoin('auth_role r','a.rid = r.id')
             ->find();
 
+        Rending::aside($roles['routes']);
+
+        if(in_array($controller,$this->white_controller)){
+            return  true;
+        }
+
+        if(in_array($login_id,$this->white_admin_ids)){
+           return  true;
+        }
+
         if(!in_array($current_menu['id'],explode(',',$roles['routes']))){
-            if($request->isPost() && $request->isAjax){
-                return  error('你没有权限操作此项，请联系管理员');
+            if($request->isPost()){
+                header("content-Type: application/json; charset=utf-8");
+               die(json_encode([
+                   'code' => 0,
+                   'msg' => '你没有权限操作此项，请联系管理员',
+                   'data' => []
+               ]));
             }
-            redirect(url("index/index"))->send();
+            redirect(url("index/jurisdiction"))->send();
+            die();
         }
     }
 }

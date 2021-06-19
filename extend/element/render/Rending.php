@@ -83,9 +83,14 @@ class  Rending
     }
 
 
-    public function aside()
+    public function aside($routes = [])
     {
         $model = new Menu();
+        //获取自身具备的权限
+        $menus = $model->getMenus($routes);
+
+
+
         View::assign('aside_html', $this->treeAside(
             tree($model->getMenus(), 0)
         ));
