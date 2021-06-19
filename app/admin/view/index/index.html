@@ -8,28 +8,13 @@ main31231
 
 {block name="script"}
 <script>
-    const App = {
-        data:function () {
-            return {
-                isCollapse: false,
-                squareUrl: "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
-                search:'',
-                aside_width:'230px',
-            };
-        },
-        methods:{
-            hideAside:function () {
-                this.isCollapse = true
-                this.aside_width = '60px'
-            },
-            showAside:function (){
-                this.isCollapse = false
-                this.aside_width = '230px'
+    const data = [];
+    function f() {
+        return {
+            init:function () {
+                console.log(1)
             }
-        },
-    };
-    const app = Vue.createApp(App);
-    app.use(ElementPlus, { size: 'mini', zIndex: 3000 });
-    app.mount("#app");
+        }
+    }
 </script>
 {/block}

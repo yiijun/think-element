@@ -62,7 +62,89 @@
             delete:'{:url("$controller/delete")}',
             deletes:'{:url("$controller/deletes")}',
             index:'{:url("$controller/index")}',
-        }
+        },
+        options: [
+            {
+                "id": 1,
+                "name": "系统设置",
+                "pid": 0,
+                "children": [
+                    {
+                        "id": 2,
+                        "name": "权限设置",
+                        "pid": 1,
+                        "children": [
+                            {
+                                "id": 3,
+                                "name": "菜单设置",
+                                "pid": 2,
+                                "children": [
+                                    {
+                                        "id": 5,
+                                        "name": "添加\\修改",
+                                        "pid": 3
+                                    },
+                                    {
+                                        "id": 6,
+                                        "name": "删除",
+                                        "pid": 3
+                                    },
+                                    {
+                                        "id": 7,
+                                        "name": "批量删除",
+                                        "pid": 3
+                                    }
+                                ]
+                            },
+                            {
+                                "id": 4,
+                                "name": "角色设置",
+                                "pid": 2,
+                                "children": [
+                                    {
+                                        "id": 8,
+                                        "name": "添加\\修改",
+                                        "pid": 4
+                                    },
+                                    {
+                                        "id": 9,
+                                        "name": "删除",
+                                        "pid": 4
+                                    },
+                                    {
+                                        "id": 10,
+                                        "name": "批量删除",
+                                        "pid": 4
+                                    }
+                                ]
+                            },
+                            {
+                                "id": 11,
+                                "name": "管理员",
+                                "pid": 2,
+                                "children": [
+                                    {
+                                        "id": 12,
+                                        "name": "添加\\修改",
+                                        "pid": 11
+                                    },
+                                    {
+                                        "id": 13,
+                                        "name": "删除",
+                                        "pid": 11
+                                    },
+                                    {
+                                        "id": 14,
+                                        "name": "批量删除",
+                                        "pid": 11
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     }
     function f(){
         return {

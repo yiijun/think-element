@@ -21,13 +21,12 @@ function error(string $msg = '失败',int $code = 0,array $data = []) : \think\r
  * @param int $deep
  * @return array
  */
-function tree($data, int $pid, int $deep = 0): array
+function tree($data, int $pid): array
 {
     $tree = [];
     foreach ($data as $row) {
         if($row['pid'] == $pid) {
-            $row['deep'] = $deep;
-            $children = tree($data, $row['id'], $deep + 1);
+            $children = tree($data, $row['id']);
             if(!empty($children)){
                 $row['children'] = $children;
             }
