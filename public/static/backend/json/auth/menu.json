@@ -26,6 +26,8 @@
         "trigger": "change",
         "filterable": true,
         "emitPath": "false",
+        "bind_label": "name",
+        "bind_value": "id",
         "callback": [
           "\\app\\admin\\model\\auth\\Menu",
           "getPidSelect",
@@ -86,11 +88,11 @@
         "search": "=",
         "is_null": true,
         "trigger": "blur",
+        "bind_label": "name",
+        "bind_value": "sid",
         "callback": [
           "\\app\\admin\\model\\auth\\Menu",
-          "getShowRadio",
-          "sid",
-          "name"
+          "getShowRadio"
         ]
       }
     },
@@ -104,11 +106,11 @@
         "search": "=",
         "is_null": true,
         "trigger": "change",
+        "bind_label": "name",
+        "bind_value": "sid",
         "callback": [
           "\\app\\admin\\model\\auth\\Menu",
-          "getSonRadio",
-          "sid",
-          "name"
+          "getSonRadio"
         ]
       }
     }

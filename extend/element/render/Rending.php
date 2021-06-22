@@ -10,36 +10,42 @@ class  Rending
 {
     public $expend_all = false;
 
-    public function table_form_search_rules(array $fields, $tree_table = false, string $pk = 'id')
+    public function table_form_search_rules(array $fields, $tree_table = false, string $pk = 'id', $is_table = true, $is_search = true)
     {
-        $this->expend_all = ( $fields['expand_all'] === true) ? "true" : "false";
+        $this->expend_all = ($fields['expand_all'] === true) ? "true" : "false";
         $form = [];
         $form_html = '<el-form ref="form" :rules="rules" :model="form" label-width="auto">' . PHP_EOL;
-        $table_html = '<el-table ref="multipleTable" border :data="data" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" ';
-        if (true === $tree_table) {
-            $table_html .= ' row-key="id"';
-            $table_html .= ' :default-expand-all=' . $this->expend_all;
-            $table_html .= ' :tree-props="{children: \'children\', hasChildren: \'hasChildren\'}"';
+        if (true === $is_table) {
+            $table_html = '<el-table ref="multipleTable" border :data="data" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" ';
+            if (true === $tree_table) {
+                $table_html .= ' row-key="id"';
+                $table_html .= ' :default-expand-all=' . $this->expend_all;
+                $table_html .= ' :tree-props="{children: \'children\', hasChildren: \'hasChildren\'}"';
+            }
+            $table_html .= '>';
+            $table_html .= '<el-table-column type="selection" width="55"></el-table-column>';
         }
-
-        $table_html .= '>';
-        $table_html .= '<el-table-column type="selection" width="55"></el-table-column>';
-        $search_html = '';
-        $search = [];
+        if (true === $is_search) {
+            $search_html = '';
+            $search = [];
+        }
         $rules = [];
-
         foreach ($fields['fields'] as $field) {
             $form_html .= Hook::make(ucfirst($field['type']), $field, 'form');
             $form[$field['key']] = $field['value'];
-            if (true === $field['prop']['table_show']) {
-                if (isset($field['prop']['callback']) && !empty($field['prop']['callback'])) {
-                    $model = new $field['prop']['callback'][0]();
-                    $option = $model->{$field['prop']['callback'][1]}() ?: [];
-                    $option = json_encode($option ?: [], 256);
+            if (true === $is_table && true === $field['prop']['table_show']) {
+                if (isset($fields['prop']['options']) || isset($field['prop']['callback'])) {
+                    if (!empty($fields['prop']['options'])) {
+                        $option = json_encode($fields['prop']['options'], 256);
+                    } else {
+                        $model = new $field['prop']['callback'][0]();
+                        $option = $model->{$field['prop']['callback'][1]}() ?: [];
+                        $option = json_encode($option ?: [], 256);
+                    }
                     $table_html .= '<el-table-column  label="' . $field['label'] . '">
                         <template #default="scope"> 
                             <span v-for=\'(item,index) in ' . $option . '\'>
-                            <el-tag v-if="item.' . $field['prop']['callback'][2] . ' == scope.row.' . $field['key'] . '"> {{item.' . $field['prop']['callback'][3] . '}}</el-tag>
+                            <el-tag v-if="item.' . $field['prop']['bind_value'] . ' == scope.row.' . $field['key'] . '"> {{item.' . $field['prop']['bind_label'] . '}}</el-tag>
                             </span>
                         </template>
                     </el-table-column>';
@@ -47,7 +53,7 @@ class  Rending
                     $table_html .= '<el-table-column prop="' . $field['key'] . '" label="' . $field['label'] . '"></el-table-column>';
                 }
             }
-            if (isset($field['prop']['search'])) {
+            if (isset($field['prop']['search']) && true === $is_search) {
                 $search_html .= Hook::make(ucfirst($field['type']), $field, 'search') . PHP_EOL;
                 $search[$field['key']] = $field['value'];
             }
@@ -61,23 +67,24 @@ class  Rending
                 ];
             }
         }
-
-        $table_html .= '<el-table-column fixed="right" label="操作" width="120">' . PHP_EOL .
-            '<template #default="scope">' . PHP_EOL .
-            '<el-button type="info" icon="el-icon-edit" @click="onEdit(scope.row)"></el-button>' . PHP_EOL .
-            '<el-popconfirm title="确定删除吗？" @confirm="onDelete(scope.row.' . $pk . ')">' . PHP_EOL .
-            '<template #reference><el-button type="danger" icon="el-icon-delete"></el-button></template>' . PHP_EOL .
-            '</el-popconfirm>' . PHP_EOL .
-            '</template></el-table-column>';
-        $table_html .= ' </el-table>';
+        if (true === $is_table) {
+            $table_html .= '<el-table-column fixed="right" label="操作" width="120">' . PHP_EOL .
+                '<template #default="scope">' . PHP_EOL .
+                '<el-button type="info" icon="el-icon-edit" @click="onEdit(scope.row)"></el-button>' . PHP_EOL .
+                '<el-popconfirm title="确定删除吗？" @confirm="onDelete(scope.row.' . $pk . ')">' . PHP_EOL .
+                '<template #reference><el-button type="danger" icon="el-icon-delete"></el-button></template>' . PHP_EOL .
+                '</el-popconfirm>' . PHP_EOL .
+                '</template></el-table-column>';
+            $table_html .= ' </el-table>';
+        }
         $form_html .= '</el-form>';
 
         View::assign([
             'form' => json_encode($form, JSON_UNESCAPED_UNICODE),
             'form_html' => $form_html,
-            'table_html' => $table_html,
-            'search_html' => $search_html,
-            'search' => json_encode($search, JSON_UNESCAPED_UNICODE),
+            'table_html' => $table_html ?? '',
+            'search_html' => $search_html ?? '',
+            'search' => json_encode($search ?? [], JSON_UNESCAPED_UNICODE),
             'rules' => json_encode($rules, JSON_UNESCAPED_UNICODE)
         ]);
     }
@@ -92,11 +99,11 @@ class  Rending
         ));
     }
 
-    private function treeAside(array $menus) : string
+    private function treeAside(array $menus): string
     {
         $html = ' ';
         foreach ($menus as $key => $row) {
-            if(!$row['children']) {
+            if (!$row['children']) {
                 $html .= '<a href="' . $row['route'] . '"><el-menu-item index="' . $row['id'] . '"><template #title><i class="' . $row['icon'] . '"></i><span>' . $row['name'] . '</span></template></el-menu-item></a>';
             } else {
                 $html .= '<el-submenu index="' . $row['id'] . '"><template #title><i class="' . $row['icon'] . '"></i> <span>' . $row['name'] . '</span></template>';
@@ -107,12 +114,12 @@ class  Rending
         return $html;
     }
 
-    public function breadcrumb($row,$model)
+    public function breadcrumb($row, $model)
     {
-        $parents = function($pid) use ($model, &$parents) {
+        $parents = function ($pid) use ($model, &$parents) {
             static $data = [];
-            if($pid != 0) $row = $model->getRowById($pid);
-            if(!empty($row)) {
+            if ($pid != 0) $row = $model->getRowById($pid);
+            if (!empty($row)) {
                 $data[] = $row;
                 $parents($row['pid']);
             }
@@ -124,7 +131,7 @@ class  Rending
         foreach (array_reverse($data) as $key => $value) {
             $breadcrumb_html .= isset($value['route']) ? ' <el-breadcrumb-item><a href="' . $value['route'] . '">' . $value['name'] . '</a></el-breadcrumb-item>' : '';
         }
-        View::assign('breadcrumb_html',$breadcrumb_html);
+        View::assign('breadcrumb_html', $breadcrumb_html);
     }
 }
 
