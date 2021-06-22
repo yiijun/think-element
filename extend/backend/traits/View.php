@@ -37,7 +37,8 @@ trait View
         $fields = file_get_contents($json_path);
         $this->fields = json_decode($fields, true);
         $this->tree_table = $this->fields['tree_table'];
-        Rending::table_form_search_rules($this->fields, $this->tree_table, $this->pk);
+
+        Rending::table_form_search_rules($this->fields, $this->tree_table, $this->pk,true,true);
     }
 
     /**

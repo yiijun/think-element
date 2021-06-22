@@ -8,14 +8,12 @@ use think\facade\View;
 
 class Index extends Base
 {
-    public $is_render = false;
-
-    public function index(App $app)
+    public function index(App $app) : string
     {
         return View::fetch();
     }
 
-    public function jurisdiction()
+    public function jurisdiction() : string
     {
         return View::fetch();
     }

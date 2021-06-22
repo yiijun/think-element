@@ -3,7 +3,7 @@ declare (strict_types=1);
 
 namespace app\admin\controller;
 
-use app\admin\model\Admin;
+use app\admin\model\auth\Admin;
 use think\exception\ValidateException;
 use think\facade\Session;
 use think\facade\View;
@@ -39,22 +39,22 @@ class Login
             $adminModel::update([
                 'login_time' => date('Y-m-d H:i:s'),
                 'ip' => $_SERVER['REMOTE_ADDR']
-            ],['uname' => $admin['uname']]);
+            ], ['uname' => $admin['uname']]);
             //更新登陆时间
-            Session::set('login_info',[
+            Session::set('login_info', [
                 'aid' => $admin['id'],
                 'uname' => $admin['uname']
             ]);
-            return success([],200,'登陆成功');
+            return success([], 200, '登陆成功');
         }
     }
 
     public function logout()
     {
-        if(Request::isPost()){
+        if (Request::isPost()) {
             Session::delete("login_info");
             return success();
         }
-        return  error('错误的请求方式');
+        return error('错误的请求方式');
     }
 }

@@ -38,11 +38,11 @@
         "trigger": "change",
         "filterable": true,
         "emitPath": "true",
+        "bind_label": "name",
+        "bind_value": "id",
         "callback": [
           "\\app\\admin\\model\\auth\\Menu",
-          "getPidSelect",
-          "id",
-          "name"
+          "getPidSelect"
         ]
       }
     }

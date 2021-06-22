@@ -62,7 +62,7 @@ class Menu extends Model
 
     public function getRowByRoute(string  $route = '')
     {
-        return $this->where("route",$route)->findOrEmpty();
+        return $this->where("route","like",'%'.$route.'%')->findOrEmpty();
     }
 
     public function getRowById($id)

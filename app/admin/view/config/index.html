@@ -1,0 +1,210 @@
+{extend name="common/pub/base" /}
+
+{block name="title"}控制面板{/block}
+
+{block name="main"}
+{include file="common/pub/breadcrumb" /}
+
+<el-button v-if="activeName== 'dictionary'" type="primary" @click="onAddGroup" icon="el-icon-plus">添加</el-button>
+<el-button v-else type="primary" @click="onAddConfig" icon="el-icon-plus">添加</el-button>
+
+<div style="margin-top: 30px;">
+    <el-tabs tab-position="left" v-model="activeName"  @tab-click="onTabClick">
+        <el-tab-pane :label="item" :name="index"  v-for="(item,index) in group.value">
+            <el-row :gutter="20">
+                <el-col :span="12">
+                    <div class="grid-content bg-purple">
+                        {$form_html|raw}
+                        <el-button type="primary" @click="onSubmit('form')">保存</el-button>
+                    </div>
+                </el-col>
+                <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+                <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+            </el-row>
+        </el-tab-pane>
+    </el-tabs>
+</div>
+
+
+<el-dialog title="添加配置" v-model="dialogFormVisible">
+    <el-form :model="post_form" ref="post_form" label-width="auto" :rules="post_rules">
+
+        <el-form-item label="配置分组" prop="group">
+            <el-select v-model="post_form.group" placeholder="请选择活动区域">
+                <el-option v-for="(item,index) in group.value" :label="item" :value="index"></el-option>
+            </el-select>
+        </el-form-item>
+
+        <el-form-item label="标题" prop="title">
+            <el-input v-model="post_form.title"></el-input>
+        </el-form-item>
+
+        <el-form-item label="类型" prop="type">
+            <el-select v-model="post_form.type" placeholder="请选择表单类型">
+                <el-option v-for="(item,index) in types" :label="item.type" :value="item.type"></el-option>
+            </el-select>
+        </el-form-item>
+
+        <el-form-item label="选项" prop="options" v-if="post_form.type=='radio' || post_form.type=='select' ">
+            <el-input type="textarea" v-model="post_form.options"></el-input>
+            <p style="color: red">如果选择radio,select,级联选择器时需要填写，格式为json,key为:id，选项卡名称为：name<br>例如：[{"id":1,"name":"QQ"},{"id":1,"name":"163"}]</p>
+        </el-form-item>
+
+        <el-form-item label="键" prop="key">
+            <el-input v-model="post_form.key"></el-input>
+        </el-form-item>
+
+        <el-form-item label="值" prop="value">
+            <el-input  v-model="post_form.value"></el-input>
+        </el-form-item>
+
+        <el-form-item label="规则" prop="rule">
+            <el-input v-model="post_form.rule"></el-input>
+        </el-form-item>
+
+    </el-form>
+    <template #footer>
+    <span class="dialog-footer">
+      <el-button @click="dialogFormVisible = false">取 消</el-button>
+      <el-button type="primary" @click="onSubmit('post_form')">确 定</el-button>
+    </span>
+    </template>
+</el-dialog>
+
+
+<el-dialog title="添加分组" v-model="dialogGroupVisible">
+    <el-form :model="post_group" ref="post_group"  label-width="auto" :rules="post_rules">
+
+        <el-form-item label="标识" prop="key">
+            <el-input v-model="post_group.key"></el-input>
+        </el-form-item>
+
+        <el-form-item label="名称" prop="key">
+            <el-input v-model="post_group.value"></el-input>
+        </el-form-item>
+
+    </el-form>
+    <template #footer>
+    <span class="dialog-footer">
+      <el-button @click="dialogFormVisible = false">取 消</el-button>
+      <el-button type="primary" @click="onSubmit('post_group')">确 定</el-button>
+    </span>
+    </template>
+</el-dialog>
+
+
+
+{/block}
+{block name="script"}
+<script>
+    const data = {
+        form:{$form|raw},
+        rules:{$rules|raw},
+        group:[],
+        activeName:'{$active_name}',
+        api:{
+            post:'{:url("$controller/post")}',
+            index:'{:url("$controller/index")}',
+        },
+        dialogFormVisible:false,
+        dialogGroupVisible:false,
+        post_form:{
+            group:'{$active_name}',
+            key:"",
+            value:"",
+            title:"",
+            rule:"",
+            type:"",
+            options:"",
+        },
+        post_group:{
+            key:"",
+            value:""
+        },
+        types:[
+            {
+                type:'input',
+            },
+            {
+                type:'number',
+            },
+            {
+                type:'password',
+            },
+            {
+                type:'radio',
+            },
+            {
+                type:'select',
+            },
+        ],
+        post_rules:{
+            "group": [
+                { required: true, message: '请选择分组', trigger: 'blur' },
+            ],
+            "title": [
+                { required: true, message: '标题必须填写', trigger: 'blur' },
+            ],
+            "key": [
+                { required: true, message: 'key必须填写', trigger: 'blur' },
+            ],
+            "type": [
+                { required: true, message: '类型必须选择', trigger: 'change' },
+            ]
+        },
+    }
+    function f() {
+        return {
+            onSubmit:function (form) {
+                let _this = this
+                this.$refs[form].validate((valid) => {
+                    if (valid) {
+                        axios.post(_this.api.post,_this.post_form).then(function (response) {
+                            if(response.data.code == 200){
+                                _this.$message.success({message:response.data.msg,type:'success'})
+                                _this.init()
+                                _this.dialogFormVisible = false
+                            }else{
+                                _this.$message.error(response.data.msg)
+                            }
+                        })
+                    } else {
+                        return false
+                    }
+                });
+            },
+            onAddConfig:function () {
+                this.post_form = {
+                    group:"basic",
+                    key:"",
+                    value:"",
+                    title:"",
+                    rule:"",
+                    type:"",
+                    options:"",
+                }
+                this.dialogFormVisible = true
+            },
+            onAddGroup:function () {
+                this.dialogGroupVisible = true
+            },
+            onTabClick:function (e) {
+                console.log("{:url('/config/index')}"+"?active_name="+e.props.name)
+                window.location.href = "{:url('/admin/config/index')}"+"?active_name="+e.props.name
+            },
+            init:function () {
+                let _this = this
+                axios.post(_this.api.index,{active_name:_this.activeName}).then(function (response) {
+                    if(response.data.code == 200){
+                        _this.group = response.data.data.group
+                    }else{
+                        _this.$message.error('初始化数据失败')
+                    }
+                }).catch(function (error) {
+                    console.log(error)
+                });
+            }
+        }
+    }
+</script>
+{/block}
