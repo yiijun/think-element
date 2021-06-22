@@ -6,6 +6,7 @@
 {include file="common/pub/breadcrumb" /}
 
 <el-button v-if="activeName== 'dictionary'" type="primary" @click="onAddGroup" icon="el-icon-plus">添加</el-button>
+
 <el-button v-else type="primary" @click="onAddConfig" icon="el-icon-plus">添加</el-button>
 
 <div style="margin-top: 30px;">
@@ -15,7 +16,7 @@
                 <el-col :span="12">
                     <div class="grid-content bg-purple">
                         {$form_html|raw}
-                        <el-button type="primary" @click="onSubmit('form')">保存</el-button>
+                        <el-button type="primary" @click="onSave('form')">保存配置</el-button>
                     </div>
                 </el-col>
                 <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
@@ -73,13 +74,13 @@
 
 
 <el-dialog title="添加分组" v-model="dialogGroupVisible">
-    <el-form :model="post_group" ref="post_group"  label-width="auto" :rules="post_rules">
+    <el-form :model="post_group" ref="post_group"  label-width="auto" :rules="group_rules">
 
         <el-form-item label="标识" prop="key">
             <el-input v-model="post_group.key"></el-input>
         </el-form-item>
 
-        <el-form-item label="名称" prop="key">
+        <el-form-item label="名称" prop="value">
             <el-input v-model="post_group.value"></el-input>
         </el-form-item>
 
@@ -87,7 +88,7 @@
     <template #footer>
     <span class="dialog-footer">
       <el-button @click="dialogFormVisible = false">取 消</el-button>
-      <el-button type="primary" @click="onSubmit('post_group')">确 定</el-button>
+      <el-button type="primary" @click="onSubmitGroup('post_group')">确 定</el-button>
     </span>
     </template>
 </el-dialog>
@@ -105,6 +106,8 @@
         api:{
             post:'{:url("$controller/post")}',
             index:'{:url("$controller/index")}',
+            save:'{:url("$controller/save")}',
+            group:'{:url("$controller/group")}',
         },
         dialogFormVisible:false,
         dialogGroupVisible:false,
@@ -152,9 +155,53 @@
                 { required: true, message: '类型必须选择', trigger: 'change' },
             ]
         },
+        group_rules:{
+            "key": [
+                { required: true, message: '请选择分组', trigger: 'blur' },
+            ],
+            "value": [
+                { required: true, message: '标题必须填写', trigger: 'blur' },
+            ],
+        }
     }
     function f() {
         return {
+            onSubmitGroup:function (form) {
+                let _this = this
+                this.$refs[form].validate((valid) => {
+                    if (valid) {
+                        axios.post(_this.api.group,{data:_this.post_group,group:_this.group}).then(function (response) {
+                            if(response.data.code == 200){
+                                _this.$message.success({message:response.data.msg,type:'success'})
+                                _this.init()
+                                _this.dialogGroupVisible = false
+                            }else{
+                                _this.$message.error(response.data.msg)
+                            }
+                        })
+                    } else {
+                        return false
+                    }
+                });
+            },
+            onSave:function (form) {
+                let _this = this
+                this.$refs[form].validate((valid) => {
+                    if (valid) {
+                        axios.post(_this.api.save,{data:_this.form,active_name:_this.activeName}).then(function (response) {
+                            if(response.data.code == 200){
+                                _this.$message.success({message:response.data.msg,type:'success'})
+                                _this.init()
+                                _this.dialogFormVisible = false
+                            }else{
+                                _this.$message.error(response.data.msg)
+                            }
+                        })
+                    } else {
+                        return false
+                    }
+                });
+            },
             onSubmit:function (form) {
                 let _this = this
                 this.$refs[form].validate((valid) => {
@@ -163,7 +210,7 @@
                             if(response.data.code == 200){
                                 _this.$message.success({message:response.data.msg,type:'success'})
                                 _this.init()
-                                _this.dialogFormVisible = false
+                                window.location.reload()
                             }else{
                                 _this.$message.error(response.data.msg)
                             }

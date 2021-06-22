@@ -73,9 +73,38 @@ class Config extends Base
             $configModel = new \app\admin\model\Config();
             $res = $configModel->save($data);
             if($res){
-                return success();
+                return success([],200,'添加配置成功');
             }
             return  error('操作失败');
         }
+    }
+
+    public function save()
+    {
+        if(Request::isPost()){
+            $data = Request::post('data');
+            $active_name = Request::post('active_name');
+            $configModel = new \app\admin\model\Config();
+            foreach ($data as $key => $value){
+                $configModel::update(['value' => $value],['key' => $key,'group' => $active_name]);
+            }
+            return success([],200,'保存成功');
+        }
+        return  error('操作失败');
+    }
+
+    public function group()
+    {
+       if(Request::isPost()){
+           $data = Request::post();
+           $data['group']['value'][$data['data']['key']] = $data['data']['value'];
+           $data['group']['value'] = json_encode($data['group']['value'],256);
+           $configModel = new \app\admin\model\Config();
+           $res = $configModel::update($data['group'],['id' => $data['group']['id']]);
+           if($res){
+               return success([],200,'增加分组成功');
+           }
+           return  error('操作失败');
+       }
     }
 }
