@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{block name="title"}{/block}</title>
+    <title>{block name="title"}{$site.basic.admin_title} {/block}</title>
     <link rel="stylesheet" href="/static/element/plus/css/index.css">
     <link rel="stylesheet" href="/static/backend/css/backend.css">
 </head>
@@ -72,13 +72,17 @@
                     if(response.data.code == 200){
                         _this.data = response.data.data.list
                         _this.count = response.data.data.count
-                        console.log(_this.data)
                     }else{
                         _this.$message.error('初始化数据失败')
                     }
                 }).catch(function (error) {
                     console.log(error)
                 });
+            },
+            onImageSuccess:function (res, file) {
+                let _this = this
+                let str = "_this.form."+res.data.key+"=res.data.files[0]"
+                eval(str)
             }
         }
     }

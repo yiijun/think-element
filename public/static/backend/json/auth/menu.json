@@ -116,5 +116,6 @@
     }
   ],
   "tree_table": true,
-  "expand_all": true
+  "expand_all": true,
+  "button" : ["add","edit","delete","deletes","search","reset"]
 }

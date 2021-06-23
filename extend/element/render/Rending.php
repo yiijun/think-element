@@ -10,8 +10,11 @@ class  Rending
 {
     public $expend_all = false;
 
+    public $button = ["add","edit","delete","deletes","search","reset"];
+
     public function table_form_search_rules(array $fields, $tree_table = false, string $pk = 'id', $is_table = true, $is_search = true)
     {
+        if(!isset($fields['button'])) $fields['button'] = $this->button;
         $this->expend_all = ($fields['expand_all'] === true) ? "true" : "false";
         $form = [];
         $form_html = '<el-form ref="form" :rules="rules" :model="form" label-width="auto">' . PHP_EOL;
@@ -42,15 +45,26 @@ class  Rending
                         $option = $model->{$field['prop']['callback'][1]}() ?: [];
                         $option = json_encode($option ?: [], 256);
                     }
-                    $table_html .= '<el-table-column  label="' . $field['label'] . '">
-                        <template #default="scope"> 
-                            <span v-for=\'(item,index) in ' . $option . '\'>
-                            <el-tag v-if="item.' . $field['prop']['bind_value'] . ' == scope.row.' . $field['key'] . '"> {{item.' . $field['prop']['bind_label'] . '}}</el-tag>
-                            </span>
-                        </template>
-                    </el-table-column>';
+                    $table_html .= '<el-table-column  label="' . $field['label'] . '">';
+                    $table_html .= '  <template #default="scope"> ';
+                    $table_html .= '  <span v-for=\'(item,index) in ' . $option . '\'> ';
+                    $table_html .= '  <el-tag v-if="item.' . $field['prop']['bind_value'] . ' == scope.row.' . $field['key'] . '"> {{item.' . $field['prop']['bind_label'] . '}}</el-tag> ';
+                    $table_html .= '</span>';
+                    $table_html .= '</template>';
+                    $table_html .= '</el-table-column>';
                 } else {
-                    $table_html .= '<el-table-column prop="' . $field['key'] . '" label="' . $field['label'] . '"></el-table-column>';
+                    if(strtolower($field['type']) == 'image'){
+                        $table_html .= '<el-table-column  label="' . $field['label'] . '">';
+                        $table_html .= '<template #default="scope"><el-image';
+                        $table_html .= ' style="width: 50px; height: 50px"';
+                        $table_html .= ' :src="scope.row.'.$field['key'].'"';
+                        $table_html .= ' :preview-src-list="[scope.row.'.$field['key'].']">';
+                        $table_html .= '</el-image>';
+                        $table_html .= '</template>';
+                        $table_html .= '</el-table-column>';
+                    }else{
+                        $table_html .= '<el-table-column prop="' . $field['key'] . '" label="' . $field['label'] . '"></el-table-column>';
+                    }
                 }
             }
             if (isset($field['prop']['search']) && true === $is_search) {
@@ -68,24 +82,28 @@ class  Rending
             }
         }
         if (true === $is_table) {
-            $table_html .= '<el-table-column fixed="right" label="操作" width="120">' . PHP_EOL .
-                '<template #default="scope">' . PHP_EOL .
-                '<el-button type="info" icon="el-icon-edit" @click="onEdit(scope.row)"></el-button>' . PHP_EOL .
-                '<el-popconfirm title="确定删除吗？" @confirm="onDelete(scope.row.' . $pk . ')">' . PHP_EOL .
-                '<template #reference><el-button type="danger" icon="el-icon-delete"></el-button></template>' . PHP_EOL .
-                '</el-popconfirm>' . PHP_EOL .
-                '</template></el-table-column>';
+            $table_html .= '<el-table-column fixed="right" label="操作" width="120">';
+            $table_html .= '<template #default="scope">';
+            if(in_array("edit",$fields['button'])) {
+                $table_html .= '<el-button type="info" icon="el-icon-edit" @click="onEdit(scope.row)"></el-button>';
+            }
+            if(in_array("delete",$fields['button'])){
+                $table_html .= '<el-popconfirm title="确定删除吗？" @confirm="onDelete(scope.row.' . $pk . ')">';
+                $table_html .= '<template #reference><el-button type="danger" icon="el-icon-delete"></el-button></template>';
+                $table_html .= '</el-popconfirm>';
+            }
+            $table_html .= '</template></el-table-column>';
             $table_html .= ' </el-table>';
         }
         $form_html .= '</el-form>';
-
         View::assign([
             'form' => json_encode($form, JSON_UNESCAPED_UNICODE),
             'form_html' => $form_html,
             'table_html' => $table_html ?? '',
             'search_html' => $search_html ?? '',
             'search' => json_encode($search ?? [], JSON_UNESCAPED_UNICODE),
-            'rules' => json_encode($rules, JSON_UNESCAPED_UNICODE)
+            'rules' => json_encode($rules, JSON_UNESCAPED_UNICODE),
+            'button' => $fields['button']
         ]);
     }
 

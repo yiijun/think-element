@@ -1,0 +1,97 @@
+{
+  "fields": [
+    {
+      "type": "Input",
+      "label": "名称",
+      "key": "name",
+      "value": "",
+      "placeholder": "图片名称",
+      "prop": {
+        "table_show": true,
+        "is_null": true,
+        "search": "like",
+        "trigger": "blur"
+      }
+    },
+    {
+      "type": "Image",
+      "label": "图片封面",
+      "key": "url",
+      "value": "",
+      "placeholder": "上传图片",
+      "prop": {
+        "table_show": true,
+        "is_null": true,
+        "trigger": "blur"
+      }
+    },
+    {
+      "type": "Input",
+      "label": "图片大小",
+      "key": "size",
+      "value": "",
+      "placeholder": "图片大小",
+      "prop": {
+        "table_show": true,
+        "search": "=",
+        "is_null": true,
+        "trigger": "blur"
+      }
+    },
+    {
+      "type": "Input",
+      "label": "图片高度",
+      "key": "height",
+      "value": "",
+      "placeholder": "图片高度",
+      "prop": {
+        "table_show": true,
+        "search": "=",
+        "is_null": true,
+        "trigger": "blur"
+      }
+    },
+    {
+      "type": "Input",
+      "label": "图片宽度",
+      "key": "width",
+      "value": "",
+      "placeholder": "图片宽度",
+      "prop": {
+        "table_show": true,
+        "search": "=",
+        "is_null": true,
+        "trigger": "blur"
+      }
+    },
+    {
+      "type": "Input",
+      "label": "图片类型",
+      "key": "mime_type",
+      "value": "",
+      "placeholder": "图片类型",
+      "prop": {
+        "table_show": true,
+        "search": "=",
+        "is_null": true,
+        "trigger": "blur"
+      }
+    },
+    {
+      "type": "Input",
+      "label": "图片后缀",
+      "key": "ext",
+      "value": "",
+      "placeholder": "图片后缀",
+      "prop": {
+        "table_show": true,
+        "search": "=",
+        "is_null": true,
+        "trigger": "blur"
+      }
+    }
+  ],
+  "tree_table":false,
+  "expand_all": false,
+  "button" : ["edit","delete","deletes","search","reset"]
+}

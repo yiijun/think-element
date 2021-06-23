@@ -48,5 +48,6 @@
     }
   ],
   "tree_table":false,
-  "expand_all": false
+  "expand_all": false,
+  "button" : ["add","edit","delete","deletes","search","reset"]
 }
