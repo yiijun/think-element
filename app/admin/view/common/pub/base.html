@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{block name="title"}{$site.basic.admin_title} {/block}</title>
-    <link rel="stylesheet" href="/static/element/plus/css/index.css">
-    <link rel="stylesheet" href="/static/backend/css/backend.css">
+    {load href="/static/element/plus/css/index.css,/static/backend/css/backend.css" /}
 </head>
 <body>
 <div id="app"  v-cloak>
@@ -22,10 +21,9 @@
 </div>
 </body>
 </html>
-<!-- 引入组件库 -->
-<script src="/static/vue/3.0.11/vue.global.js"></script>
-<script src="/static/element/plus/js/index.full.js"></script>
-<script src="/static/js/axios.min.js"></script>
+
+{load href="/static/vue/3.0.11/vue.global.js,/static/element/plus/js/index.full.js,/static/js/axios.min.js" /}
+
 {block name="script"}{/block}
 <script>
     const common_data = {

@@ -9,12 +9,7 @@
     </div>
 
     <div class="el-search" v-if="isCollapse === false">
-      <!--<el-input  placeholder="搜索菜单" v-model="search_menu" size="mini">
-        <template #prefix>
-          <i class="el-input__icon el-icon-search"></i>
-        </template>
-      </el-input>-->
-      {$site.basic.admin_title}
+      <a style="color: #409EFF; text-decoration: none;" href="{:url('/admin/index/index')}">{$site.basic.admin_title}</a>
     </div>
     <div style="clear: both;"></div>
   </div>

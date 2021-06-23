@@ -2,11 +2,8 @@
 
 {block name="main"}
 {include file="common/pub/breadcrumb" /}
-
 <el-button v-if="activeName== 'dictionary'" type="primary" @click="onAddGroup" icon="el-icon-plus">添加</el-button>
-
 <el-button v-else type="primary" @click="onAddConfig" icon="el-icon-plus">添加</el-button>
-
 <div style="margin-top: 30px;">
     <el-tabs tab-position="left" v-model="activeName"  @tab-click="onTabClick">
         <el-tab-pane :label="item" :name="index"  v-for="(item,index) in group.value">
@@ -20,7 +17,8 @@
                 <el-col :span="6">
                     <div class="grid-content bg-purple">
                         <ul style="list-style: none; margin: 0; padding: 0">
-                            <li v-for="(item,index) in form"  style="margin-bottom: 18px;line-height: 28px">$site.{{activeName}}.{{index}}
+                            <li v-for="(item,index) in form"  style="margin-bottom: 18px;line-height: 28px">
+                                {literal} {$site.{{activeName}}.{{index}}}{/literal}
                             </li>
                         </ul>
                    </div>
@@ -34,18 +32,14 @@
                                         <i class="el-icon-delete"> 移除</i>
                                     </template>
                                 </el-popconfirm>
-
                             </li>
                         </ul>
-
                     </div>
                 </el-col>
             </el-row>
         </el-tab-pane>
     </el-tabs>
 </div>
-
-
 <el-dialog title="添加配置" v-model="dialogFormVisible">
     <el-form :model="post_form" ref="post_form" label-width="auto" :rules="post_rules">
 
@@ -105,9 +99,6 @@
     </span>
     </template>
 </el-dialog>
-
-
-
 {/block}
 {block name="script"}
 <script>
