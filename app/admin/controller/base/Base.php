@@ -15,6 +15,6 @@ class Base
         //获取网站配置
         $configModel = new Config();
         $site = $configModel->getWebConfig();
-        View::assign('site',$site);
+        View::assign('site', $site);
     }
 }
