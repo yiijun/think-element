@@ -1,7 +1,4 @@
 {extend name="common/pub/base" /}
-
-{block name="title"}控制面板{/block}
-
 {block name="main"}
     {include file="common/pub/breadcrumb" /}
 
@@ -9,18 +6,27 @@
 <el-form label-width="auto">
     <div class="el-search-main">
         {$search_html|raw}
-        <div class="el-form-item"><el-button type="primary" size="mini" @click="onSearch(1)">查询</el-button></div>
-        <div class="el-form-item"><el-button type="warning" size="mini" @click="onReset">重置</el-button></div>
+        {if in_array('search',$button)}
+            <div class="el-form-item"><el-button type="primary" size="mini" @click="onSearch(1)">查询</el-button></div>
+        {/if}
+        {if in_array('reset',$button)}
+            <div class="el-form-item"><el-button type="warning" size="mini" @click="onReset">重置</el-button></div>
+        {/if}
     </div>
 </el-form>
 
-    <el-button type="primary" @click="onAdd" icon="el-icon-plus">添加</el-button>
 
+{if in_array('add',$button)}
+    <el-button type="primary" @click="onAdd" icon="el-icon-plus">添加</el-button>
+{/if}
+
+{if in_array('deletes',$button)}
     <el-popconfirm title="这是一段内容确定删除吗？"  @confirm="onDeletes">
         <template #reference>
             <el-button type="danger"   icon="el-icon-delete">批量删除</el-button>
         </template>
     </el-popconfirm>
+{/if}
 
     <!--渲染表单，表单总是以弹窗的形式来表现-->
     <el-dialog title="添加/修改" v-model="dialogFormVisible">

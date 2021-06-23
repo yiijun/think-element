@@ -1,14 +1,9 @@
 {extend name="common/pub/base" /}
 
-{block name="title"}控制面板{/block}
-
 {block name="main"}
 {include file="common/pub/breadcrumb" /}
-
 <el-button v-if="activeName== 'dictionary'" type="primary" @click="onAddGroup" icon="el-icon-plus">添加</el-button>
-
 <el-button v-else type="primary" @click="onAddConfig" icon="el-icon-plus">添加</el-button>
-
 <div style="margin-top: 30px;">
     <el-tabs tab-position="left" v-model="activeName"  @tab-click="onTabClick">
         <el-tab-pane :label="item" :name="index"  v-for="(item,index) in group.value">
@@ -19,22 +14,34 @@
                         <el-button type="primary" @click="onSave('form')">保存配置</el-button>
                     </div>
                 </el-col>
-                <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
-                <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+                <el-col :span="6">
+                    <div class="grid-content bg-purple">
+                        <ul style="list-style: none; margin: 0; padding: 0">
+                            <li v-for="(item,index) in form"  style="margin-bottom: 18px;line-height: 28px">
+                                {literal} {$site.{{activeName}}.{{index}}}{/literal}
+                            </li>
+                        </ul>
+                   </div>
+                </el-col>
+                <el-col :span="6">
+                    <div class="grid-content bg-purple">
+                        <ul style="list-style: none; margin: 0; padding: 0">
+                            <li v-for="(item,index) in form"  style="margin-bottom: 18px;line-height: 28px">
+                                <el-popconfirm title="确定移除吗？" @confirm="onDeleteConfig(index)">
+                                    <template #reference>
+                                        <i class="el-icon-delete"> 移除</i>
+                                    </template>
+                                </el-popconfirm>
+                            </li>
+                        </ul>
+                    </div>
+                </el-col>
             </el-row>
         </el-tab-pane>
     </el-tabs>
 </div>
-
-
 <el-dialog title="添加配置" v-model="dialogFormVisible">
     <el-form :model="post_form" ref="post_form" label-width="auto" :rules="post_rules">
-
-        <el-form-item label="配置分组" prop="group">
-            <el-select v-model="post_form.group" placeholder="请选择活动区域">
-                <el-option v-for="(item,index) in group.value" :label="item" :value="index"></el-option>
-            </el-select>
-        </el-form-item>
 
         <el-form-item label="标题" prop="title">
             <el-input v-model="post_form.title"></el-input>
@@ -42,11 +49,11 @@
 
         <el-form-item label="类型" prop="type">
             <el-select v-model="post_form.type" placeholder="请选择表单类型">
-                <el-option v-for="(item,index) in types" :label="item.type" :value="item.type"></el-option>
+                <el-option v-for="(item,index) in types" :label="item.name" :value="item.type"></el-option>
             </el-select>
         </el-form-item>
 
-        <el-form-item label="选项" prop="options" v-if="post_form.type=='radio' || post_form.type=='select' ">
+        <el-form-item label="选项" prop="options" v-if="post_form.type=='radio' || post_form.type=='select' || post_form.type == 'CascaderRadio' || post_form.type == 'CascaderCheckBox' ">
             <el-input type="textarea" v-model="post_form.options"></el-input>
             <p style="color: red">如果选择radio,select,级联选择器时需要填写，格式为json,key为:id，选项卡名称为：name<br>例如：[{"id":1,"name":"QQ"},{"id":1,"name":"163"}]</p>
         </el-form-item>
@@ -92,9 +99,6 @@
     </span>
     </template>
 </el-dialog>
-
-
-
 {/block}
 {block name="script"}
 <script>
@@ -108,6 +112,7 @@
             index:'{:url("$controller/index")}',
             save:'{:url("$controller/save")}',
             group:'{:url("$controller/group")}',
+            delete:'{:url("$controller/delete")}',
         },
         dialogFormVisible:false,
         dialogGroupVisible:false,
@@ -126,20 +131,45 @@
         },
         types:[
             {
-                type:'input',
+                type:'Input',
+                name:'单行文本'
             },
             {
-                type:'number',
+                type:'Textarea',
+                name:'多行文本'
             },
             {
-                type:'password',
+                type:'Number',
+                name:'数字文本'
             },
             {
-                type:'radio',
+                type:'Image',
+                name:'数字文本'
             },
             {
-                type:'select',
+                type:'Password',
+                name:'密码',
             },
+            {
+                type:'Image',
+                name:'单图',
+            },
+            {
+                type:'Radio',
+                name:'单选框'
+            },
+            {
+                type:'Select',
+                name:'下拉选择'
+            },
+            {
+                type:'CascaderRadio',
+                name:'单选级联'
+            },
+            {
+                type:'CascaderCheckBox',
+                name:'复选级联'
+            }
         ],
         post_rules:{
             "group": [
@@ -166,6 +196,19 @@
     }
     function f() {
         return {
+            onDeleteConfig:function (key) {
+                let _this = this
+                axios.post(_this.api.delete,{active_name:_this.activeName,key:key}).then(function (response) {
+                    if(response.data.code == 200){
+                        _this.$message.success({message:response.data.msg,type:'success'})
+                        setTimeout(function () {
+                            window.location.reload()
+                        },1500)
+                    }else{
+                        _this.$message.error(response.data.msg)
+                    }
+                })
+            },
             onSubmitGroup:function (form) {
                 let _this = this
                 this.$refs[form].validate((valid) => {
@@ -222,7 +265,7 @@
             },
             onAddConfig:function () {
                 this.post_form = {
-                    group:"basic",
+                    group:'{$active_name}',
                     key:"",
                     value:"",
                     title:"",
