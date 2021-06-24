@@ -15,6 +15,8 @@
             </el-header>
             <el-main>
                 {block name="main"}{/block}
+                <!--load plugins--->
+                {$plugin_html ? $plugin_html|raw:'' }
             </el-main>
         </el-container>
     </el-container>
@@ -37,6 +39,8 @@
         page:1,
         count:0,
         ids:[],
+        //加载钩子变量
+        plugins_data:{$plugin_data ? $plugin_data|raw :'{literal}{}{/literal}' },
     }
     function common_f() {
         return {
@@ -81,7 +85,9 @@
                 let _this = this
                 let str = "_this.form."+res.data.key+"=res.data.files[0]"
                 eval(str)
-            }
+            },
+            //加载钩子函数
+            {$plugin_func ? $plugin_func|raw :''}
         }
     }
 

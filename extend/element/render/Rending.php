@@ -3,7 +3,9 @@
 namespace element\render;
 
 use app\admin\model\auth\Menu;
+use backend\plug\Plugins;
 use element\component\hook\Hook;
+use think\facade\Event;
 use think\facade\View;
 
 class  Rending
@@ -96,6 +98,12 @@ class  Rending
             $table_html .= ' </el-table>';
         }
         $form_html .= '</el-form>';
+        //根据配置文件加载插件
+        if(isset($fields['plugins'])){
+            $plugins = Plugins::start($fields['plugins']);
+
+            View::assign($plugins);
+        }
         View::assign([
             'form' => json_encode($form, JSON_UNESCAPED_UNICODE),
             'form_html' => $form_html,

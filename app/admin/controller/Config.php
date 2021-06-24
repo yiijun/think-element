@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\admin\controller\base\Base;
+use backend\plug\images\Plugin;
 use element\facade\Rending;
 use think\facade\Request;
 use think\facade\View;
@@ -19,6 +20,7 @@ class Config extends Base
         $fields['fields'] = [];
         $fields['tree_table'] = false;
         $fields['expand_all'] = false;
+        $fields['plugins'] = ['images'];
         foreach ($config as $key => &$value) {
             switch ($value['type']) {
                 case 'json':
@@ -52,8 +54,10 @@ class Config extends Base
                     ];
             }
         }
+
         View::assign('active_name', $active_name);
         Rending::table_form_search_rules($fields, false, 'id', false, false);
+
         if (Request::isPost()) {
             $configModel = new \app\admin\model\Config();
             $group = $configModel->getConfigGroup();

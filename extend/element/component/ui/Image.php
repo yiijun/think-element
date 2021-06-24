@@ -16,6 +16,7 @@ class Image
         $html .= '<img v-if="'.$form_name.'.'.$fields['key'].'" :src="'.$form_name.'.'.$fields['key'].'" class="avatar">';
         $html .= '<i v-else class="el-icon-plus avatar-uploader-icon"></i>';
         $html .= '</el-upload>';
+        $html .= '<div class="el-upload-button"><el-button type="danger" icon="el-icon-picture" @click="onPluginImage(\''.$form_name.'\',\''.$fields['key'].'\')">选择图库</el-button></div>';
         $html .= '</el-form-item>';
         return  $html;
     }
