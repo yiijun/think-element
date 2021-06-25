@@ -39,9 +39,9 @@ class  Rending
             $form_html .= Hook::make(ucfirst($field['type']), $field, 'form');
             $form[$field['key']] = $field['value'];
             if (true === $is_table && true === $field['prop']['table_show']) {
-                if (isset($fields['prop']['options']) || isset($field['prop']['callback'])) {
-                    if (!empty($fields['prop']['options'])) {
-                        $option = json_encode($fields['prop']['options'], 256);
+                if (isset($field['prop']['options']) || isset($field['prop']['callback'])) {
+                    if (!empty($field['prop']['options'])) {
+                        $option = json_encode($field['prop']['options'], 256);
                     } else {
                         $model = new $field['prop']['callback'][0]();
                         $option = $model->{$field['prop']['callback'][1]}() ?: [];

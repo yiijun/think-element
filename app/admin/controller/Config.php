@@ -53,7 +53,6 @@ class Config extends Base
                     ];
             }
         }
-
         View::assign('active_name', $active_name);
         Rending::table_form_search_rules($fields, false, 'id', false, false);
 
