@@ -3,7 +3,6 @@
 namespace app\admin\controller;
 
 use app\admin\controller\base\Base;
-use backend\plug\images\Plugin;
 use element\facade\Rending;
 use think\facade\Request;
 use think\facade\View;

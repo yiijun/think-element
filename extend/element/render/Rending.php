@@ -12,11 +12,11 @@ class  Rending
 {
     public $expend_all = false;
 
-    public $button = ["add","edit","delete","deletes","search","reset"];
+    public $button = ["add", "edit", "delete", "deletes", "search", "reset"];
 
     public function table_form_search_rules(array $fields, $tree_table = false, string $pk = 'id', $is_table = true, $is_search = true)
     {
-        if(!isset($fields['button'])) $fields['button'] = $this->button;
+        if (!isset($fields['button'])) $fields['button'] = $this->button;
         $this->expend_all = ($fields['expand_all'] === true) ? "true" : "false";
         $form = [];
         $form_html = '<el-form ref="form" :rules="rules" :model="form" label-width="auto">' . PHP_EOL;
@@ -55,16 +55,16 @@ class  Rending
                     $table_html .= '</template>';
                     $table_html .= '</el-table-column>';
                 } else {
-                    if(strtolower($field['type']) == 'image'){
+                    if (strtolower($field['type']) == 'image') {
                         $table_html .= '<el-table-column  label="' . $field['label'] . '">';
                         $table_html .= '<template #default="scope"><el-image';
                         $table_html .= ' style="width: 50px; height: 50px"';
-                        $table_html .= ' :src="scope.row.'.$field['key'].'"';
-                        $table_html .= ' :preview-src-list="[scope.row.'.$field['key'].']">';
+                        $table_html .= ' :src="scope.row.' . $field['key'] . '"';
+                        $table_html .= ' :preview-src-list="[scope.row.' . $field['key'] . ']">';
                         $table_html .= '</el-image>';
                         $table_html .= '</template>';
                         $table_html .= '</el-table-column>';
-                    }else{
+                    } else {
                         $table_html .= '<el-table-column prop="' . $field['key'] . '" label="' . $field['label'] . '"></el-table-column>';
                     }
                 }
@@ -86,10 +86,10 @@ class  Rending
         if (true === $is_table) {
             $table_html .= '<el-table-column fixed="right" label="操作" width="120">';
             $table_html .= '<template #default="scope">';
-            if(in_array("edit",$fields['button'])) {
+            if (in_array("edit", $fields['button'])) {
                 $table_html .= '<el-button type="info" icon="el-icon-edit" @click="onEdit(scope.row)"></el-button>';
             }
-            if(in_array("delete",$fields['button'])){
+            if (in_array("delete", $fields['button'])) {
                 $table_html .= '<el-popconfirm title="确定删除吗？" @confirm="onDelete(scope.row.' . $pk . ')">';
                 $table_html .= '<template #reference><el-button type="danger" icon="el-icon-delete"></el-button></template>';
                 $table_html .= '</el-popconfirm>';
@@ -99,10 +99,23 @@ class  Rending
         }
         $form_html .= '</el-form>';
         //根据配置文件加载插件
-        if(isset($fields['plugins'])){
-            $plugins = Plugins::start($fields['plugins']);
-
-            View::assign($plugins);
+        if (isset($fields['plugins'])) {
+            $plugin_html = '';
+            $plugin_data = [];
+            $plugin_func = '';
+            $plugin_mon = '';
+            foreach ($fields['plugins'] as $key => $value) {
+                $plugin_html .= hook($value . 'Html');
+                $plugin_data += json_decode(hook($value . 'Data'), true);
+                $plugin_func .= hook($value . 'Func') . ',';
+                $plugin_mon .= hook($value . 'Mon');
+            }
+            View::assign([
+                'plugin_html' => $plugin_html,
+                'plugin_data' => json_encode($plugin_data, 256),
+                'plugin_func' => trim($plugin_func, ','),
+                'plugin_mon' => $plugin_mon
+            ]);
         }
         View::assign([
             'form' => json_encode($form, JSON_UNESCAPED_UNICODE),

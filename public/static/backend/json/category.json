@@ -1,11 +1,11 @@
 {
   "fields": [
     {
-      "type": "input",
-      "label": "菜单名称",
+      "type": "Input",
+      "label": "分类名称",
       "key": "name",
       "value": "",
-      "placeholder": "请输入菜单名称",
+      "placeholder": "请输入分类名称",
       "prop": {
         "table_show": true,
         "search": "like",
@@ -29,17 +29,17 @@
         "bind_label": "name",
         "bind_value": "id",
         "callback": [
-          "\\app\\admin\\model\\auth\\Menu",
+          "\\app\\admin\\model\\Category",
           "getPidSelect"
         ]
       }
     },
     {
-      "type": "input",
-      "label": "Icon",
-      "key": "icon",
+      "type": "Input",
+      "label": "跳转地址",
+      "key": "url",
       "value": "",
-      "placeholder": "请输入菜单图标",
+      "placeholder": "请输入跳转地址",
       "prop": {
         "table_show": true,
         "search": "=",
@@ -48,14 +48,54 @@
       }
     },
     {
-      "type": "input",
-      "label": "路由",
-      "key": "route",
+      "type": "Image",
+      "label": "栏目封面",
+      "key": "image",
+      "value": "",
+      "placeholder": "请上传图片",
+      "prop": {
+        "table_show": true,
+        "is_null": false,
+        "trigger": "blur"
+      }
+    },
+    {
+      "type": "Radio",
+      "label": "分类标签",
+      "key": "tag",
       "value": "",
       "placeholder": "请输入路由规则",
       "prop": {
+        "bind_label": "name",
+        "bind_value": "id",
         "table_show": true,
         "search": "=",
+        "is_null": false,
+        "trigger": "blur",
+        "options":[{"id": 1,"name": "首页"},{"id": 2,"name": "热门"},{"id": 3,"name": "推荐"}]
+      }
+    },
+    {
+      "type": "Input",
+      "label": "关键词",
+      "key": "keyword",
+      "value": "",
+      "placeholder": "请输入分类关键词",
+      "prop": {
+        "table_show": true,
+        "search": "=",
+        "is_null": false,
+        "trigger": "blur"
+      }
+    },
+    {
+      "type": "Textarea",
+      "label": "描述",
+      "key": "description",
+      "value": "",
+      "placeholder": "请输入分类描述",
+      "prop": {
+        "table_show": false,
         "is_null": false,
         "trigger": "blur"
       }
@@ -78,43 +118,22 @@
     },
     {
       "type": "radio",
-      "label": "显示",
-      "key": "show",
-      "value": 2,
+      "label": "状态",
+      "key": "status",
+      "value": 1,
       "prop": {
         "table_show": true,
         "search": "=",
         "is_null": true,
         "trigger": "blur",
         "bind_label": "name",
-        "bind_value": "sid",
-        "callback": [
-          "\\app\\admin\\model\\auth\\Menu",
-          "getShowRadio"
-        ]
-      }
-    },
-    {
-      "type": "radio",
-      "label": "子菜单",
-      "key": "son",
-      "value": 1,
-      "prop": {
-        "table_show": true,
-        "search": "=",
-        "is_null": true,
-        "trigger": "change",
-        "bind_label": "name",
-        "bind_value": "sid",
-        "callback": [
-          "\\app\\admin\\model\\auth\\Menu",
-          "getSonRadio"
-        ]
+        "bind_value": "id",
+        "options":[{"id": 1,"name": "显示"},{"id": 2,"name": "隐藏"}]
       }
     }
   ],
   "tree_table": true,
-  "expand_all": false,
+  "expand_all": true,
   "button" : ["add","edit","delete","deletes","search","reset"],
   "plugins": ["images"]
 }

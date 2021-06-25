@@ -11,11 +11,11 @@ class Upload
         $params = request()->post();
         $files = request()->file();
         $save_name = [];
-        try{
-            validate(['image'=>'filesize:10240|fileExt:jpg,jpeg,png,gif'])->check($files);
+        /*try{
+            validate(['image'=>'filesize:10240|fileExt:jpg,jpeg,png,gif,webp'])->check($files);
         }catch (ValidateException $e){
             return  error($e->getMessage());
-        }
+        }*/
         foreach ($files as $file) {
             $size = (filesize($file) / 1024);
             list($width, $height, $type, $attr) = getimagesize($file);

@@ -32,13 +32,11 @@ trait View
         $json_path = rtrim($json_path, '/');
         $json_path .= '.json';
         $this->model = new $model_path;
-
         $this->pk = $this->model->getPk();
         $fields = file_get_contents($json_path);
         $this->fields = json_decode($fields, true);
         $this->tree_table = $this->fields['tree_table'];
-
-        Rending::table_form_search_rules($this->fields, $this->tree_table, $this->pk,true,true);
+        Rending::table_form_search_rules($this->fields, $this->tree_table, $this->pk, true, true);
     }
 
     /**
@@ -98,7 +96,7 @@ trait View
                 'count' => intval($count)
             ], 200, '加载数据成功');
         }
-        \think\facade\View::assign('pk',$this->pk);
+        \think\facade\View::assign('pk', $this->pk);
         return \think\facade\View::fetch('common/index');
     }
 
