@@ -17,21 +17,21 @@ return [
 
     'type'            => env('database.type', 'mysql'),
 
-    'hostname'        => env('database.hostname', '127.0.0.1'),
+    'hostname'        => env('database.hostname', '%s'),
 
-    'database'        => env('database.database', 'think-element'),
+    'database'        => env('database.database', '%s'),
 
-    'username'        => env('database.username', 'root'),
+    'username'        => env('database.username', '%s'),
 
-    'password'        => env('database.password', 'root'),
+    'password'        => env('database.password', '%s'),
 
-    'hostport'        => env('database.hostport', '3306'),
+    'hostport'        => env('database.hostport', '%s'),
 
     'params'          => [],
 
-    'charset'         => env('database.charset', 'utf8'),
+    'charset'         => env('database.charset', '%s'),
 
-    'prefix'          => env('database.prefix', 'td_'),
+    'prefix'          => env('database.prefix', '%s'),
 
 
     'deploy'          => 0,
