@@ -31,7 +31,7 @@ return [
 
     'charset'         => env('database.charset', 'utf8'),
 
-    'prefix'          => env('database.prefix', 'td_'),
+    'prefix'          => env('database.prefix', 'te_'),
 
 
     'deploy'          => 0,
