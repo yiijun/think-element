@@ -2,7 +2,6 @@
 
 namespace app\install\controller;
 
-use think\db\exception\PDOException;
 use think\facade\Config;
 use think\facade\Db;
 use think\facade\Request;
@@ -14,7 +13,7 @@ class Index
     public function index()
     {
         if (file_exists(root_path().'pubic/install.lock')) {
-            $this->error('网站已经安装', cmf_get_root() . '/');
+            return  error('网站已经安装');
         }
 
         return View::fetch();
