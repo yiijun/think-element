@@ -53,11 +53,15 @@
             </el-table>
         </div>
 
+
         <div v-if="active==2 && show == false">
             <div id="install-mysql" style="height: 500px; overflow-y: auto;"></div>
-            <el-button style="margin-top: 12px;" type="primary" @click="onFinish" v-if="finish == true">数据安装完成</el-button>
-        </div>
 
+            <div style="width: 100%; text-align: center;">
+                <el-button style="margin-top: 12px;" type="primary" @click="onFinish" v-if="finish == true">数据安装完成</el-button>
+            </div>
+
+        </div>
         <div v-if="active==2 && show == true">
             <h4>数据库配置</h4>
             <el-form :model="form" :rules="rules" ref="form" label-width="auto" class="demo-ruleForm">
