@@ -57,10 +57,6 @@
         <div v-if="active==2 && show == false">
             <div id="install-mysql" style="height: 500px; overflow-y: auto;"></div>
 
-            <div style="width: 100%; text-align: center;">
-                <el-button style="margin-top: 12px;" type="primary" @click="onFinish" v-if="finish == true">数据安装完成</el-button>
-            </div>
-
         </div>
         <div v-if="active==2 && show == true">
             <h4>数据库配置</h4>
@@ -216,7 +212,7 @@
 
                 <div style="width: 100%; text-align: center;">
                     <el-button style="margin-top: 12px;" type="danger" @click="up" v-if="active > 1">上一步</el-button>
-                    <el-button style="margin-top: 12px;" type="primary" @click="onSubmit('form')" v-if="finish==false">创建数据</el-button>
+                    <el-button style="margin-top: 12px;" type="primary" @click="onSubmit('form')">创建数据</el-button>
                 </div>
             </el-form>
         </div>
@@ -341,36 +337,35 @@
         },
         onInstall:function (i) {
             let _this = this
+            i++
             axios.post(_this.api.install,{sql_index:i}).then(function (response) {
-                console.log(response)
                 if(response.data.code == 200){
-                    _this.sql_error_count++
                     $("#install-mysql").append( '<p>'+response.data.data.message+'</p>')
-                    i++
-                    if(i <_this.sql_count){
-                        _this.onInstall(i)
+                    if(response.data.data.sql_error && response.data.data.sql_error > 0){
+                        $("#install-mysql").append( '<p>一共'+response.data.data.sql_error+'条sql执行错误；</p>')
+                    }else{
+                        if(i < _this.sql_count){
+                            _this.onInstall(i)
+                        }else{
+                            _this.onFinish()
+                        }
                     }
+                }else {
+                    $("#install-mysql").append( '<p>配置异常请检查数据库配置或者联系开发者</p>')
                 }
             });
         },
+
         onFinish:function () {
             let _this = this
-            let apis = ["site","admin","database"];
-            let success_count = 0;
+            let apis = ["site","admin","database","block"];
             apis.forEach(function (item,index) {
                 axios.post(_this.api[item],{id:1}).then(function (response) {
-                    console.log(response)
                     if(response.data.code == 200){
-                        success_count ++
                         $("#install-mysql").append( '<p>'+response.data.data.message+'</p>')
                     }
                 });
             })
-            axios.post(_this.api.block,{id:1}).then(function (response) {
-                if(response.data.code == 200){
-                    $("#install-mysql").append( '<p>'+response.data.data.message+'</p>')
-                }
-            });
             setTimeout(function () {
                 _this.active = 3
             },2000)
@@ -383,12 +378,10 @@
                         if(response.data.code == 200){
                             _this.sql_count = response.data.data.sql_count
                             _this.show = false
-                            _this.onInstall(0)
-                            _this.finish = true
+                            _this.onInstall(-1)
                         }
                     });
                 } else {
-                    console.log('error submit!!');
                     return false;
                 }
             });

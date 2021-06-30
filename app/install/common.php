@@ -11,13 +11,15 @@ function sp_execute_sql($db, $sql)
             $db->execute($sql);
             return [
                 'error'   => 0,
-                'message' => $msg . ' 成功！'
+                'message' => $msg . ' 成功！',
+                'sql_error' => 0
             ];
         } catch (\PDOException $e) {
             return [
                 'error'     => 1,
                 'message'   => $msg . ' 失败！',
-                'exception' => $e->getMessage()
+                'exception' => $e->getMessage(),
+                'sql_error' => 0
             ];
         }
 
@@ -26,13 +28,15 @@ function sp_execute_sql($db, $sql)
             $db->execute($sql);
             return [
                 'error'   => 0,
-                'message' => 'SQL执行成功!'
+                'message' => 'SQL执行成功!',
+                'sql_error' => 0
             ];
         } catch (\PDOException $e) {
             return [
                 'error'     => 1,
                 'message'   => $e->getMessage(),
-                'exception' => $e->getMessage()
+                'exception' => $e->getMessage(),
+                'sql_error' => 0
             ];
         }
     }

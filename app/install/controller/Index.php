@@ -13,7 +13,7 @@ class Index
     public function index()
     {
         if (is_file(root_path() . 'public//install.lock')) {
-            return  error('网站已经安装');
+            return error('网站已经安装');
         }
         return View::fetch();
     }
@@ -152,12 +152,12 @@ class Index
                 'prefix' => Request::post('prefix')
             ]);
 
-            //读区sql 文件
             $sql_path = app_path() . 'data/install.sql';
             $sql = split_sql($sql_path, Request::post('prefix'), Request::post('charset'));
             Session::set('install_sql', $sql);
             $sql_count = count($sql);
 
+            Session::set('install_error', 0);
             //设置站点名称
             Session::set('install_site', [
                 'title' => Request::post('title'),
@@ -190,61 +190,64 @@ class Index
         Config::set($db_config, 'database');
 
         if ($sql_index >= count($sql)) {
-            return  success([
-                [
-                    'error'   => 0,
-                    'message' =>   '数据库安装完成！'
-                ]
+            return success([
+                    'sql_error' => Session::get('install_error')?:0,
+                    'message' => '数据库安装完成！'
             ]);
         }
+        $sql_to_exec = $sql[$sql_index] . ';';
         try {
             $db = Db::connect('dynamic', true);
-            $res = sp_execute_sql($db,$sql[$sql_index].';');
+            $result = sp_execute_sql($db, $sql_to_exec);
         } catch (\PDOException $exception) {
             return error($exception->getMessage(), $exception->getCode(), ['next' => false]);
         }
-        return  success($res);
+        if (!empty($result['error'])) {
+            $install_error = Session::get('install_error') ?: 0;
+            Session::set('install_error', $install_error + 1);
+        }
+        return success($result);
     }
 
     public function site()
     {
-        if(Request::isPost()){
+        if (Request::isPost()) {
             //设置站点基本信息
             $site = Session::get('install_site');
-            foreach (['title','keywords','description','admin_title'] as $value){
-                Db::name('config')->where("key",$value)->update([
+            foreach (['title', 'keywords', 'description', 'admin_title'] as $value) {
+                Db::name('config')->where("key", $value)->update([
                     'value' => $site[$value]
                 ]);
             }
             return success([
-                'error'   => 0,
-                'message' =>   '设置站点信息成功！'
+                'error' => 0,
+                'message' => '设置站点信息成功！'
             ]);
         }
     }
 
     public function admin()
     {
-        if(Request::isPost()){
+        if (Request::isPost()) {
             $admin = Session::get("install_admin");
             $date = date('Y-m-d H:i:s');
             $res = Db::name("admin")->insert([
                 'rid' => 0,
                 'uname' => $admin['admin_username'],
-                'pass' => password_hash($admin['admin_password'],1),
+                'pass' => password_hash($admin['admin_password'], 1),
                 'ip' => $_SERVER['REMOTE_ADDR'],
                 'login_time' => $date,
                 'create_time' => $date,
             ]);
-            if($res){
+            if ($res) {
                 return success([
-                    'error'   => 0,
-                    'message' =>   '增加管理员信息成功！'
+                    'error' => 0,
+                    'message' => '增加管理员信息成功！'
                 ]);
             }
             return success([
-                'error'   => 0,
-                'message' =>   '增加管理员信息失败！'
+                'error' => 0,
+                'message' => '增加管理员信息失败！'
             ]);
         }
     }
@@ -252,9 +255,9 @@ class Index
     //设置数据库信息
     public function database()
     {
-        if(Request::isPost()){
+        if (Request::isPost()) {
             $database_session = Session::get("install_databases");
-            $database_file = file_get_contents(app_path().'data/database.tpl');
+            $database_file = file_get_contents(app_path() . 'data/database.tpl');
             //替换变量
             $database_file = sprintf($database_file,
                 $database_session['hostname'],
@@ -266,27 +269,27 @@ class Index
                 $database_session['prefix']
             );
             //替换数据库配置文件
-            $res = file_put_contents(root_path().'config/database.php',$database_file);
-            if($res){
+            $res = file_put_contents(root_path() . 'config/database.php', $database_file);
+            if ($res) {
                 return success([
-                    'error'   => 0,
-                    'message' =>   '更新数据库配置文件成功！'
+                    'error' => 0,
+                    'message' => '更新数据库配置文件成功！'
                 ]);
             }
             return success([
-                'error'   => 0,
-                'message' =>   '跟新数据库配置文件失败！'
+                'error' => 0,
+                'message' => '跟新数据库配置文件失败！'
             ]);
         }
     }
 
     public function block()
     {
-        $path = root_path().'public/install.lock';
+        $path = root_path() . 'public/install.lock';
         @touch($path);
         return success([
-            'error'   => 0,
-            'message' =>   '写入锁定文件成功！'
+            'error' => 0,
+            'message' => '写入锁定文件成功！'
         ]);
     }
 }
