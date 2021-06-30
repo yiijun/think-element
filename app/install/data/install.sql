@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS `td_admin` (
   `uname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '用户名',
   `pass` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '密码',
   `ip` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '登陆IP',
-  `login_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '登陆时间',
-  `create_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  `login_time` datetime DEFAULT NULL  COMMENT '登陆时间',
+  `create_time` datetime DEFAULT NULL  COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
