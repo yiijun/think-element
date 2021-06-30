@@ -1,36 +1,41 @@
-ThinkPHP 6.0
+Think-element
 ===============
 
-> 运行环境要求PHP7.1+，兼容PHP8.0。
+think-element 使用Thinkphp6 + element ui + vue实现的快速制作项目通用后台管理框架。 适合个人开发者、工作室，非常适合快速开发中小型项目，一键curd能够快速生成
+一个模块的操作，支持操作和事件支持钩子实现，可以构造字段模型单独生成form、table、search等组件。
 
-[官方应用服务市场](https://market.topthink.com) | [`ThinkAPI`——官方统一API服务](https://docs.topthink.com/think-api)
 
-ThinkPHPV6.0版本由[亿速云](https://www.yisu.com/)独家赞助发布。
+> 运行环境要求PHP7.1+
 
 ## 主要新特性
 
-* 采用`PHP7`强类型（严格模式）
-* 支持更多的`PSR`规范
-* 原生多应用支持
-* 更强大和易用的查询
-* 全新的事件系统
-* 模型事件和数据库事件统一纳入事件系统
-* 模板引擎分离出核心
-* 内部功能中间件化
-* SESSION/Cookie机制改进
-* 对Swoole以及协程支持改进
-* 对IDE更加友好
-* 统一和精简大量用法
+* 一键curd
+* 权限颗粒化
+* 自动渲染表单
+* 自动渲染普通表格、无限极表格
+* Element-ui 组件封装
+* 自动渲染查询组件
+* 支持无限极菜单、无限极面包屑
+* 分组增加配置选项
+* 可自定义视图
+* 功能支持钩子扩展
+
 
 ## 安装
 
 ~~~
+git clone https://gitee.com/phpbloger/think-element.git
+
+cd /think-element
+
 composer update
+
 ~~~
 
+浏览器访问站点进入安装程序，根据步骤进行安装即可。
 
 ## 文档
 
-[完全开发手册](https://www.kancloud.cn/manual/thinkphp6_0/content)
+😄，目前没有文档，功能还在完善中........开发着玩，写得不好、包涵...
 
 ## 参与开发
