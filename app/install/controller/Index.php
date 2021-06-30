@@ -12,10 +12,9 @@ class Index
 {
     public function index()
     {
-        if (file_exists(root_path().'pubic/install.lock')) {
+        if (is_file(root_path() . 'public//install.lock')) {
             return  error('网站已经安装');
         }
-
         return View::fetch();
     }
 
