@@ -37,34 +37,31 @@
                 </el-form-item>
 
                 <el-form-item label="字段设置">
-                    <ul style="list-style: none; padding: 0; margin: 0;">
-                        <li style="border: 1px solid #cccccc; padding: 0px 10px; border-radius: 5px; margin-bottom: 10px;position: relative;" v-for="item in form.fields">
-                            <pre>{{item}}</pre>
-                                <el-button class="el-icon-delete" style="position: absolute;top: 0;bottom: 0;margin: auto; right: -100px;height: 28px;" type="danger">删除字段</el-button>
-                        </li>
-                    </ul>
+                    <el-button type="success" @click="handleAddField">增加字段</el-button>
+                    <div style="list-style: none; padding: 0;margin-bottom: 20px;" id="jsonPre">
 
-                    <div style="margin-top: 20px;">
-                        <el-button type="success" @click="dialogFieldVisible = true">增加字段</el-button>
                     </div>
                 </el-form-item>
+
+                <el-button type="primary" @click="handleSubmit('form')">确认添加</el-button>
 
             </el-form>
         </div>
     </el-col>
 
-
     <el-col :span="16">
         <div class="grid-content bg-purple">
             <ul style="list-style: none; margin: 0; padding: 0">
-                <li  style="margin-bottom: 18px;line-height: 28px">
-                    如果是多层控制器，中间使用英文 . 号隔开
-                </li>
+                <li  style="margin-bottom: 18px;line-height: 28px; color: #cccccc">如果是多层控制器，中间使用英文 . 号隔开</li>
+                <li  style="margin-bottom: 18px;line-height: 28px;color: #cccccc">无限极表格父级字段必须为:pid</li>
+                <li  style="margin-bottom: 18px;line-height: 28px;color: #cccccc">普通表格请选择：否</li>
+                <li  style="margin-bottom: 36px;line-height: 46px;color: #cccccc">操作按钮选择,不选择将不渲染</li>
+                <li  style="margin-bottom: 18px;line-height: 28px;color: #cccccc">后台的插件、可以自己开发加入进来</li>
+                <li  style="margin-bottom: 18px;line-height: 28px;color: #cccccc">字段设置非常重要，改设置将会为你生成数据表和控制器、模型、配置文件</li>
             </ul>
         </div>
         </el-col>
 </el-row>
-
 
 <el-dialog title="添加\修改字段" v-model="dialogFieldVisible">
     <el-form :model="default_fields"  ref="default_fields" :rules="fields_rules" label-width="auto">
@@ -162,6 +159,8 @@
 {/block}
 
 {block name="script"}
+<script type="text/javascript" src="/static/js/renderjson.js"></script>
+
 <script>
     const data = {
         default_fields:{
@@ -195,11 +194,6 @@
             },
             {
                 type:'Number',
-                name:'数字文本',
-                box:false,
-            },
-            {
-                type:'Image',
                 name:'数字文本',
                 box:false,
             },
@@ -241,25 +235,7 @@
             expand_all:false,
             button:['add', 'edit','delete','deletes','search','reset'],
             plugins:['images'],
-            fields:[
-                {
-                    type:"Input",
-                    label:"",
-                    key:"title",
-                    value:"",
-                    placeholder:"",
-                    prop:{
-                        table_show:true,
-                        search:"=",
-                        is_null:"",
-                        trigger:"",
-                        bind_label:"",
-                        bind_value:"",
-                        options:[],
-                        ext:{}
-                    }
-                }
-            ],
+            fields:[],
         },
         fields_rules:{
             type:[
@@ -310,16 +286,62 @@
             }
         ],
         isIndeterminate: true,
-        box:false
+        box:false,
+        api:{
+            post:"{:url('general.tool/post')}"
+        }
     }
 
     function f() {
         return {
+            handleAddField:function () {
+                this.dialogFieldVisible = true
+                //初始化
+                this.default_fields = {
+                    type:"Input",
+                        label:"",
+                        key:"",
+                        value:"",
+                        placeholder:"",
+                        prop:{
+                        table_show:true,
+                            search:"=",
+                            is_null:"",
+                            trigger:"",
+                            bind_label:"name",
+                            bind_value:"id",
+                            options:'',
+                            ext:{},
+                        callback:["",""]
+                    }
+                }
+            },
+            handleSubmit:function (form) {
+                let _this = this
+                _this.$refs[form].validate((valid) => {
+                    if (valid) {
+                        axios.post(_this.api.post,_this.form).then(function (response) {
+                            if(response.data.code == 200){
+                                _this.$message.success(response.data.msg)
+                            }else{
+                                _this.$message.error(response.data.msg);
+                            }
+                        }).catch(function (error) {
+                            console.log(error)
+                        })
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
             handleField:function (default_fields) {
                 let _this = this
                 _this.$refs[default_fields].validate((valid) => {
                     if (valid) {
                         _this.form.fields.push(_this.default_fields)
+                        console.log(_this.form.fields)
+                        document.getElementById("jsonPre").appendChild(renderjson(_this.default_fields));
                         _this.dialogFieldVisible = false
                     } else {
                         console.log('error submit!!');
@@ -333,7 +355,6 @@
               for (let i=0; i< _this.types.length;i++){
                   if(_this.types[i].type == e && _this.types[i].box == true){
                       _this.box = true
-                      console.log(111111111)
                       return;
                   }else {
                       _this.box= false
@@ -341,7 +362,8 @@
               }
             },
             init:function () {
-                console.log(1)
+                renderjson.set_icons('+', '-');
+                renderjson.set_show_to_level(2);
             }
         }
     }

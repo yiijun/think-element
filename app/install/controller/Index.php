@@ -76,6 +76,14 @@ class Index
                     'name' => '配置文件',
                     'path' => 'public/static/backend/json'
                 ],
+                [
+                    'name' => 'public',
+                    'path' => 'public'
+                ],
+                [
+                    'name' => 'database',
+                    'path' => 'config/database.php'
+                ],
             ];
             $paths = [];
 
@@ -245,10 +253,7 @@ class Index
                     'message' => '增加管理员信息成功！'
                 ]);
             }
-            return success([
-                'error' => 0,
-                'message' => '增加管理员信息失败！'
-            ]);
+            return error('增加管理员信息失败,请检查配置或者重新安装（需要删掉已安装的数据库）');
         }
     }
 
@@ -276,10 +281,8 @@ class Index
                     'message' => '更新数据库配置文件成功！'
                 ]);
             }
-            return success([
-                'error' => 0,
-                'message' => '跟新数据库配置文件失败！'
-            ]);
+            return error('更新数据库配置文件失败，,请检查配置或者重新安装（需要删掉已安装的数据库）');
+
         }
     }
 

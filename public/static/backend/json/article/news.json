@@ -1,0 +1,1 @@
+{"controller_name":"article.news","tree_table":false,"expand_all":false,"button":["add","edit","delete","deletes","search","reset"],"plugins":["images"],"fields":[{"type":"Input","label":"标题","key":"title","value":"","placeholder":"请输入标题","prop":{"table_show":true,"search":"like","is_null":true,"trigger":"blur"}}]}

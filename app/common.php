@@ -35,3 +35,10 @@ function tree($data, int $pid): array
     }
     return $tree;
 }
+
+function directory( $dir ){
+
+    return  is_dir ( $dir ) or directory(dirname( $dir )) and  mkdir ( $dir , 0777);
+
+}
+
