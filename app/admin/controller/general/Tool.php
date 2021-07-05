@@ -3,6 +3,7 @@
 namespace app\admin\controller\general;
 
 use app\admin\controller\base\Base;
+use app\admin\model\auth\Menu;
 use think\facade\Config;
 use think\facade\Db;
 use think\facade\Request;
@@ -137,6 +138,40 @@ class Tool extends Base
             $sql .= "`create_time` datetime DEFAULT NULL  COMMENT '创建时间',";
             $sql .= "  PRIMARY KEY (`id`) USING BTREE) ";
             $sql .= " ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET={$charset};";
+
+            //生成菜单
+            if(true === $data['route']){
+                try {
+                    $menuModel = new Menu();
+                    $menu_id = $menuModel->insertGetId([
+                        'name' => $data['menu_name'],
+                        'pid' => 0,
+                        'icon' => 'el-icon-tickets',
+                        'route' => '/admin/'.$data['controller_name'].'/index',
+                        'weigh' => 0,
+                        'show' => 1,
+                        'son' => 1,
+                    ]);
+                    if($menu_id){
+                        $auths = ['post' => '添加\修改','delete' => '删除单行','deletes' => '批量删除'];
+                        foreach ($auths as $key => $auth){
+                            $menuModel->insert(
+                                [
+                                    'name' => $auth,
+                                    'pid' => 0,
+                                    'icon' => 'el-icon-tickets',
+                                    'route' => '/admin/'.$data['controller_name'].'/'.$key,
+                                    'weigh' => 0,
+                                    'show' => 2,
+                                    'son' => 2,
+                                ]
+                            );
+                        }
+                    }
+                }catch (\Exception $exception){
+                    return  error('生成菜单失败');
+                }
+            }
 
             //创建配置文件
             $json = json_encode($data, 256);

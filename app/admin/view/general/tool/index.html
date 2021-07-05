@@ -10,8 +10,19 @@
                     <el-input v-model="form.controller_name"></el-input>
                 </el-form-item>
 
+                <el-form-item label="菜单名称" prop="menu_name">
+                    <el-input v-model="form.menu_name"></el-input>
+                </el-form-item>
+
                 <el-form-item label="无限极表格">
                     <el-radio-group v-model="form.tree_table">
+                        <el-radio :label="true">是</el-radio>
+                        <el-radio :label="false">否</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+
+                <el-form-item label="生成路由">
+                    <el-radio-group v-model="form.route">
                         <el-radio :label="true">是</el-radio>
                         <el-radio :label="false">否</el-radio>
                     </el-radio-group>
@@ -54,8 +65,9 @@
             <ul style="list-style: none; margin: 0; padding: 0">
                 <li  style="margin-bottom: 18px;line-height: 28px; color: #cccccc">如果是多层控制器，中间使用英文 . 号隔开</li>
                 <li  style="margin-bottom: 18px;line-height: 28px;color: #cccccc">无限极表格父级字段必须为:pid</li>
+                <li  style="margin-bottom: 18px;line-height: 28px;color: #cccccc">自动生成权限菜单</li>
                 <li  style="margin-bottom: 18px;line-height: 28px;color: #cccccc">普通表格请选择：否</li>
-                <li  style="margin-bottom: 36px;line-height: 46px;color: #cccccc">操作按钮选择,不选择将不渲染</li>
+                <li  style="margin-bottom: 46px;line-height: 74px;color: #cccccc">操作按钮选择,不选择将不渲染</li>
                 <li  style="margin-bottom: 18px;line-height: 28px;color: #cccccc">后台的插件、可以自己开发加入进来</li>
                 <li  style="margin-bottom: 18px;line-height: 28px;color: #cccccc">字段设置非常重要，改设置将会为你生成数据表和控制器、模型、配置文件</li>
             </ul>
@@ -172,8 +184,8 @@
             prop:{
                 table_show:true,
                 search:"=",
-                is_null:"",
-                trigger:"",
+                is_null:false,
+                trigger:"blur",
                 bind_label:"name",
                 bind_value:"id",
                 options:'',
@@ -230,6 +242,8 @@
         ],
         dialogFieldVisible:false,
         form:{
+            route:true,
+            menu_name:'',
             controller_name:'',
             tree_table:false,
             expand_all:false,
@@ -251,6 +265,9 @@
         rules:{
             controller_name: [
                 { required: true, message: '控制器名称必填', trigger: 'blur' }
+            ],
+            menu_name: [
+                { required: true, message: '菜单名称必填', trigger: 'blur' }
             ]
         },
         plugins:[
@@ -306,8 +323,8 @@
                         prop:{
                         table_show:true,
                             search:"=",
-                            is_null:"",
-                            trigger:"",
+                            is_null:false,
+                            trigger:"blur",
                             bind_label:"name",
                             bind_value:"id",
                             options:'',
