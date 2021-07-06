@@ -1,4 +1,5 @@
 <?php
+
 namespace addons\images;
 
 use think\Addons;
@@ -7,10 +8,10 @@ use think\facade\Db;
 class Plugin extends Addons
 {
     public $info = [
-        'name' => 'Images',	// 插件标识
-        'title' => '图片选择',	// 插件名称
-        'description' => '任何地方可以选择附件选择器',	// 插件简介
-        'status' => 1,	// 状态
+        'name' => 'Images',    // 插件标识
+        'title' => '图片选择',    // 插件名称
+        'description' => '任何地方可以选择附件选择器',    // 插件简介
+        'status' => 1,    // 状态
         'author' => 'byron sampson',
         'version' => '0.1'
     ];
@@ -25,7 +26,7 @@ class Plugin extends Addons
         return true;
     }
 
-    public function imagesHtml() : string
+    public function images(): string
     {
         $plugins_html = ' <el-dialog title="选择图片" v-model="plugins_data.Plugin_image_dialogImageVisible">';
         $plugins_html .= ' <el-table :data= "plugins_data.Plugin_image_data" border >';
@@ -52,30 +53,19 @@ class Plugin extends Addons
         $plugins_html .= '</div>';
         $plugins_html .= '</el-dialog>';
 
-        return $plugins_html;
-    }
+        $plugins_mon = 'this.imagesInit();';
 
-    public function imagesMon() : string
-    {
-        return 'this.imagesInit();';
-    }
-
-    public function imagesData() :string
-    {
-        return json_encode([
+        $plugins_data = [
             'Plugin_image_dialogImageVisible' => false,
             'Plugin_image_field' => 'image',
             'Plugin_image_form' => 'form',
             'Plugin_image_total' => 0,
             'Plugin_image_page' => 1,
             'Plugin_image_data' => []
-        ]);
-    }
+        ];
 
-    public function imagesFunc() : string
-    {
         $url = addons_url('images://images/index');
-        return <<< plugins_func
+        $plugins_func = <<< plugins_func
 onPluginImage:function(form,field){
 let _this = this
 _this.plugins_data.Plugin_image_dialogImageVisible = true;
@@ -101,7 +91,14 @@ axios.post("{$url}",{page:_this.plugins_data.Plugin_image_page}).then(function (
         _this.\$message.error('初始化数据失败')
     }
 })
-}
+},
 plugins_func;
+
+        return json_encode([
+            'plugin_html' => $plugins_html,
+            'plugin_data' => $plugins_data,
+            'plugin_func' => $plugins_func,
+            'plugin_mon' => $plugins_mon
+        ]);
     }
 }

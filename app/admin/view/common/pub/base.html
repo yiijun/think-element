@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>{block name="title"}{$site.basic.admin_title} {/block}</title>
     {load href="/static/element/plus/css/index.css,/static/backend/css/backend.css" /}
+    {$plugin_css ? $plugin_css|raw :''}
 </head>
 <body>
 <div id="app"  v-cloak>
@@ -15,7 +16,7 @@
             </el-header>
             <el-main>
                 {block name="main"}{/block}
-                <!--load plugins--->
+                <!--load plugins html--->
                 {$plugin_html ? $plugin_html|raw:'' }
             </el-main>
         </el-container>
@@ -23,8 +24,9 @@
 </div>
 </body>
 </html>
-
 {load href="/static/vue/3.0.11/vue.global.js,/static/element/plus/js/index.full.js,/static/js/axios.min.js" /}
+<!--加载钩子script-->
+{$plugin_script ? $plugin_script|raw :''}
 
 {block name="script"}{/block}
 <script>
@@ -39,9 +41,10 @@
         page:1,
         count:0,
         ids:[],
-        //加载钩子变量
-        plugins_data:{$plugin_data ? $plugin_data|raw :'{literal}{}{/literal}' },
     }
+
+    const plugin_data = {plugins_data:{$plugin_data ? $plugin_data|raw :'{literal}{}{/literal}' }};
+
     function common_f() {
         return {
             hideAside: function () {
@@ -65,7 +68,6 @@
                     }
                 })
             },
-            //初始化函数，获取表格数据
             init:function (page) {
                 if(!page){page = 1}
                 let _this = this
@@ -85,17 +87,22 @@
                 let _this = this
                 let str = "_this.form."+res.data.key+"=res.data.files[0]"
                 eval(str)
-            },
-            //加载钩子函数
-            {$plugin_func ? $plugin_func|raw :''}
+            }
         }
+    }
+
+    function plugin_f(){
+        return {
+        {$plugin_func ? $plugin_func|raw :''}
+    }
     }
 
     const App = {
         data: function () {
-            return Object.assign(common_data, data)
+            console.log(plugin_data)
+            return Object.assign(common_data, data, plugin_data)
         },
-        methods: Object.assign(common_f(), f()),
+        methods: Object.assign(common_f(), f(),plugin_f()),
         mounted:function () {
             this.init()
             {$plugin_mon ? $plugin_mon|raw :''}

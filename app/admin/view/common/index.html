@@ -28,8 +28,7 @@
     </el-popconfirm>
 {/if}
 
-    <!--渲染表单，表单总是以弹窗的形式来表现-->
-    <el-dialog title="添加/修改" v-model="dialogFormVisible">
+    <el-dialog title="添加/修改" v-model="dialogFormVisible" @open="onDialogOpen">
         {$form_html|raw}
         <!--事件按钮-->
         <template #footer>
@@ -72,6 +71,7 @@
     }
     function f(){
         return {
+            onDialogOpen:function(e){},
             onAdd:function () {
                 let _this = this
                 _this.dialogFormVisible = true

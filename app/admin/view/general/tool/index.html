@@ -2,78 +2,142 @@
 
 {block name="main"}
 {include file="common/pub/breadcrumb" /}
-<el-row :gutter="20">
-    <el-col :span="8">
-        <div class="grid-content bg-purple">
-            <el-form :model="form" :rules="rules"  ref="form" label-width="auto" >
+<el-form :model="form" :rules="rules"  ref="form" label-width="auto" >
+    <el-row :gutter="20">
+        <el-col :span="8">
+            <div class="grid-content bg-purple">
                 <el-form-item label="控制器名称" prop="controller_name">
                     <el-input v-model="form.controller_name"></el-input>
                 </el-form-item>
+            </div>
+        </el-col>
+        <el-col :span="16">
+            <div class="grid-content bg-purple">
+                <span style="color: #cccccc">如果是多层控制器，中间使用英文 . 号隔开</span>
+            </div>
+        </el-col>
+    </el-row>
 
+    <el-row :gutter="20">
+        <el-col :span="8">
+            <div class="grid-content bg-purple">
                 <el-form-item label="菜单名称" prop="menu_name">
                     <el-input v-model="form.menu_name"></el-input>
                 </el-form-item>
+            </div>
+        </el-col>
+        <el-col :span="16">
+            <div class="grid-content bg-purple">
+                <span style="color: #cccccc">父级菜单名称</span>
+            </div>
+        </el-col>
+    </el-row>
 
+    <el-row :gutter="20">
+        <el-col :span="8">
+            <div class="grid-content bg-purple">
                 <el-form-item label="无限极表格">
                     <el-radio-group v-model="form.tree_table">
                         <el-radio :label="true">是</el-radio>
                         <el-radio :label="false">否</el-radio>
                     </el-radio-group>
                 </el-form-item>
+            </div>
+        </el-col>
+        <el-col :span="16">
+            <div class="grid-content bg-purple">
+                <span style="color: #cccccc">无限极表格父级字段必须为:pid</span>
+            </div>
+        </el-col>
+    </el-row>
 
+    <el-row :gutter="20">
+        <el-col :span="8">
+            <div class="grid-content bg-purple">
                 <el-form-item label="生成路由">
                     <el-radio-group v-model="form.route">
                         <el-radio :label="true">是</el-radio>
                         <el-radio :label="false">否</el-radio>
                     </el-radio-group>
                 </el-form-item>
+            </div>
+        </el-col>
+        <el-col :span="16">
+            <div class="grid-content bg-purple">
+                <span style="color: #cccccc">自动生成权限菜单</span>
+            </div>
+        </el-col>
+    </el-row>
 
+    <el-row :gutter="20">
+        <el-col :span="8">
+            <div class="grid-content bg-purple">
                 <el-form-item label="展开全部">
                     <el-radio-group v-model="form.expand_all">
                         <el-radio :label="true">是</el-radio>
                         <el-radio :label="false">否</el-radio>
                     </el-radio-group>
                 </el-form-item>
+            </div>
+        </el-col>
+        <el-col :span="16">
+            <div class="grid-content bg-purple">
+                <span style="color: #cccccc">只有无限极表格时才选择展开</span>
+            </div>
+        </el-col>
+    </el-row>
 
+    <el-row :gutter="20">
+        <el-col :span="8">
+            <div class="grid-content bg-purple">
                 <el-form-item label="渲染按钮">
                     <el-checkbox-group v-model="form.button" >
                         <el-checkbox v-for="item in buttons" :label="item.value" :key="item.value">{{item.name}}</el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
+            </div>
+        </el-col>
+        <el-col :span="16">
+            <div class="grid-content bg-purple">
+                <span style="color: #cccccc">渲染操作事件，一般通用模块全选即可</span>
+            </div>
+        </el-col>
+    </el-row>
 
+    <el-row :gutter="20">
+        <el-col :span="8">
+            <div class="grid-content bg-purple">
                 <el-form-item label="后台钩子">
                     <el-checkbox-group v-model="form.plugins" >
                         <el-checkbox v-for="item in plugins" :label="item.value" :key="item.value">{{item.name}}</el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
-
+            </div>
+        </el-col>
+        <el-col :span="16">
+            <div class="grid-content bg-purple">
+                <span style="color: #cccccc">后台插件，Markdown 一个模块建议只设置一个输入框为markdown</span>
+            </div>
+        </el-col>
+    </el-row>
+    <el-row :gutter="20">
+        <el-col :span="8">
+            <div class="grid-content bg-purple">
                 <el-form-item label="字段设置">
                     <el-button type="success" @click="handleAddField">增加字段</el-button>
-                    <div style="list-style: none; padding: 0;margin-bottom: 20px;" id="jsonPre">
-
-                    </div>
+                    <div style="list-style: none; padding: 0;margin-bottom: 20px;" id="jsonPre"></div>
                 </el-form-item>
-
-                <el-button type="primary" @click="handleSubmit('form')">确认添加</el-button>
-
-            </el-form>
-        </div>
-    </el-col>
-
-    <el-col :span="16">
-        <div class="grid-content bg-purple">
-            <ul style="list-style: none; margin: 0; padding: 0">
-                <li  style="margin-bottom: 18px;line-height: 28px; color: #cccccc">如果是多层控制器，中间使用英文 . 号隔开</li>
-                <li  style="margin-bottom: 18px;line-height: 28px;color: #cccccc">无限极表格父级字段必须为:pid</li>
-                <li  style="margin-bottom: 18px;line-height: 28px;color: #cccccc">自动生成权限菜单</li>
-                <li  style="margin-bottom: 18px;line-height: 28px;color: #cccccc">普通表格请选择：否</li>
-                <li  style="margin-bottom: 46px;line-height: 74px;color: #cccccc">操作按钮选择,不选择将不渲染</li>
-                <li  style="margin-bottom: 18px;line-height: 28px;color: #cccccc">后台的插件、可以自己开发加入进来</li>
-                <li  style="margin-bottom: 18px;line-height: 28px;color: #cccccc">字段设置非常重要，改设置将会为你生成数据表和控制器、模型、配置文件</li>
-            </ul>
-        </div>
+            </div>
         </el-col>
-</el-row>
+        <el-col :span="16">
+            <div class="grid-content bg-purple">
+                <span style="color: #cccccc">字段配置非常重要，是创建数据表的依据。</span>
+            </div>
+        </el-col>
+    </el-row>
+
+    <el-button type="primary" @click="handleSubmit('form')">确认添加</el-button>
+</el-form>
 
 <el-dialog title="添加\修改字段" v-model="dialogFieldVisible">
     <el-form :model="default_fields"  ref="default_fields" :rules="fields_rules" label-width="auto">
@@ -104,7 +168,7 @@
             </el-form-item>
 
             <el-form-item label="回调类">
-                <el-input v-model="default_fields.prop.callback[1]"  :rows="4"></el-input>
+                <el-input v-model="default_fields.prop.callback[0]"  :rows="4"></el-input>
                 <p>回调函数的优先级比options低，一般设置其一即可。例如："\\app\\admin\\model\\Category"</p>
             </el-form-item>
 
@@ -205,6 +269,11 @@
                 box:false,
             },
             {
+                type:'Markdown',
+                name:'Markdown编辑器',
+                box:false,
+            },
+            {
                 type:'Number',
                 name:'数字文本',
                 box:false,
@@ -231,14 +300,15 @@
             },
             {
                 type:'CascaderRadio',
-                name:'单选级联',
+                name:'分类级联',
                 box:true,
             },
             {
                 type:'CascaderCheckBox',
                 name:'复选级联',
                 box:true,
-            }
+            },
+
         ],
         dialogFieldVisible:false,
         form:{
@@ -275,6 +345,10 @@
                 name:"选择图库",
                 value:"images"
             },
+            {
+                name:"Markdown编辑器",
+                value:"markdown"
+            }
         ],
         buttons: [
             {
@@ -372,6 +446,10 @@
               for (let i=0; i< _this.types.length;i++){
                   if(_this.types[i].type == e && _this.types[i].box == true){
                       _this.box = true
+                      if(e == 'CascaderRadio'){
+                          _this.default_fields.prop.callback[0] = '/\/\app/\/\admin/\/\model/\/\Category'
+                          _this.default_fields.prop.callback[1] = "getPidSelect"
+                      }
                       return;
                   }else {
                       _this.box= false

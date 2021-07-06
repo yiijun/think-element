@@ -98,25 +98,9 @@ class  Rending
             $table_html .= ' </el-table>';
         }
         $form_html .= '</el-form>';
-        //根据配置文件加载插件
-        if (isset($fields['plugins'])) {
-            $plugin_html = '';
-            $plugin_data = [];
-            $plugin_func = '';
-            $plugin_mon = '';
-            foreach ($fields['plugins'] as $key => $value) {
-                $plugin_html .= hook($value . 'Html');
-                $plugin_data += json_decode(hook($value . 'Data'), true);
-                $plugin_func .= hook($value . 'Func') . ',';
-                $plugin_mon .= hook($value . 'Mon');
-            }
-            View::assign([
-                'plugin_html' => $plugin_html,
-                'plugin_data' => json_encode($plugin_data, 256),
-                'plugin_func' => trim($plugin_func, ','),
-                'plugin_mon' => $plugin_mon
-            ]);
-        }
+
+        if (isset($fields['plugins']) && !empty($fields['plugins'])) $this->plugins($fields['plugins']);
+
         View::assign([
             'form' => json_encode($form, JSON_UNESCAPED_UNICODE),
             'form_html' => $form_html,
@@ -128,6 +112,37 @@ class  Rending
         ]);
     }
 
+    /**
+     * @param $plugins
+     * 后台插件
+     */
+    public function plugins($plugins)
+    {
+        $plugin_html = '';
+        $plugin_data = [];
+        $plugin_func = '';
+        $plugin_mon = '';
+        $plugin_script = '';
+        $plugin_css = '';
+        foreach ($plugins as $key => $value) {
+            $res = hook($value, null, false); //调用插件
+            $res = json_decode($res, true);
+            $plugin_html .= $res['plugin_html'] ?? '';
+            $plugin_func .= $res['plugin_func'] ?? '' . ',';
+            $plugin_data += $res['plugin_data'] ?? [];
+            $plugin_mon .= $res['plugin_mon'] ?? '';
+            $plugin_script .= $res['plugin_script'] ?? '';
+            $plugin_css .= $res['plugin_css'] ?? '';
+        }
+        View::assign([
+            'plugin_html' => $plugin_html,
+            'plugin_data' => json_encode($plugin_data, 256),
+            'plugin_func' => $plugin_func,
+            'plugin_mon' => $plugin_mon,
+            'plugin_script' => $plugin_script,
+            'plugin_css' => $plugin_css,
+        ]);
+    }
 
     public function aside($routes = [])
     {

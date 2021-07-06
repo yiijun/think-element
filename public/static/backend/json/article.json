@@ -1,0 +1,45 @@
+{
+  "route": true,
+  "menu_name": "文章管理",
+  "controller_name": "article",
+  "tree_table": false,
+  "expand_all": false,
+  "button": [
+    "add",
+    "edit",
+    "delete",
+    "deletes",
+    "search",
+    "reset"
+  ],
+  "plugins": [
+    "images","markdown"
+  ],
+  "fields": [
+    {
+      "type": "Input",
+      "label": "文章标题",
+      "key": "title",
+      "value": "",
+      "placeholder": "请输入标题",
+      "prop": {
+        "table_show": true,
+        "search": "=",
+        "is_null": false,
+        "trigger": "blur"
+      }
+    },
+    {
+      "type": "Markdown",
+      "label": "文章内容",
+      "key": "content",
+      "value": "",
+      "placeholder": "请输入标题",
+      "prop": {
+        "table_show": false,
+        "is_null": false,
+        "trigger": "blur"
+      }
+    }
+  ]
+}

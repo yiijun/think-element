@@ -132,9 +132,11 @@ class Tool extends Base
                         }
                         $sql .= "`{$field['key']}` tinyint(4) NOT NULL  DEFAULT {$field['value']} COMMENT '{$field['label']}',";
                         break;
+                    case 'Markdown':
+                        $sql .= "`{$field['key']}` text NULL  COMMENT '{$field['label']}'";
+                        break;
                 }
             }
-
             $sql .= "`create_time` datetime DEFAULT NULL  COMMENT '创建时间',";
             $sql .= "  PRIMARY KEY (`id`) USING BTREE) ";
             $sql .= " ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET={$charset};";
@@ -149,8 +151,9 @@ class Tool extends Base
                         'icon' => 'el-icon-tickets',
                         'route' => '/admin/'.$data['controller_name'].'/index',
                         'weigh' => 0,
-                        'show' => 1,
+                        'show' => 2,
                         'son' => 1,
+                        'create_time' => date('Y-m-d H:i:s')
                     ]);
                     if($menu_id){
                         $auths = ['post' => '添加\修改','delete' => '删除单行','deletes' => '批量删除'];
@@ -158,12 +161,13 @@ class Tool extends Base
                             $menuModel->insert(
                                 [
                                     'name' => $auth,
-                                    'pid' => 0,
+                                    'pid' => $menu_id,
                                     'icon' => 'el-icon-tickets',
                                     'route' => '/admin/'.$data['controller_name'].'/'.$key,
                                     'weigh' => 0,
-                                    'show' => 2,
+                                    'show' => 1,
                                     'son' => 2,
+                                    'create_time' => date('Y-m-d H:i:s')
                                 ]
                             );
                         }
