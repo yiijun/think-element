@@ -45,11 +45,10 @@ class  Rending
                     } else {
                         $model = new $field['prop']['callback'][0]();
                         $option = $model->{$field['prop']['callback'][1]}() ?: [];
-                        //如果有多级则把数据组成一级
                         $t = function ($option) use (&$t){
                             static $ot = [];
                             foreach ($option as $o){
-                                if($o['children']){
+                                if(isset($o['children']) && !empty($o['children'])){
                                     $t($o['children']);
                                 }else{
                                     $ot[] = $o;
