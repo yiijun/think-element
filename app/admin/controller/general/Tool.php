@@ -104,7 +104,7 @@ class Tool extends Base
                     unset($field['prop']['ext']);
                 }
 
-                if(!$field['prop']['options']){
+                if(!$field['prop']['options'] && !isset($field['prop']['callback'])){
                     unset($field['prop']['bind_label']);
                     unset($field['prop']['bind_value']);
                     unset($field['prop']['options']);
@@ -115,7 +115,7 @@ class Tool extends Base
                     case 'textarea':
                     case 'password':
                     case 'image':
-                    case 'cascaderCheckBox':
+                    case 'cascadercheckbox':
                         $sql .= "`{$field['key']}` varchar(255) NOT NULL  DEFAULT '' COMMENT '{$field['label']}',";
                         break;
                     case 'content':
@@ -126,21 +126,18 @@ class Tool extends Base
                         break;
                     case 'radio':
                     case 'select':
-                    case 'cascaderRadio':
-                        if (!$field['value']) {
-                            return error('为选项字段时必须填写一个默认值，默认值为选项中的一个');
-                        }
-                        $sql .= "`{$field['key']}` tinyint(4) NOT NULL  DEFAULT {$field['value']} COMMENT '{$field['label']}',";
+                    case 'cascaderradio':
+                        $default = $field['value'] ?:0;
+                        $sql .= "`{$field['key']}` tinyint(4) NOT NULL  DEFAULT {$default} COMMENT '{$field['label']}',";
                         break;
-                    case 'Markdown':
-                        $sql .= "`{$field['key']}` text NULL  COMMENT '{$field['label']}'";
+                    case 'markdown':
+                        $sql .= "`{$field['key']}` text NULL  COMMENT '{$field['label']}',";
                         break;
                 }
             }
             $sql .= "`create_time` datetime DEFAULT NULL  COMMENT '创建时间',";
             $sql .= "  PRIMARY KEY (`id`) USING BTREE) ";
             $sql .= " ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET={$charset};";
-
             //生成菜单
             if(true === $data['route']){
                 try {

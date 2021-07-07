@@ -33,24 +33,21 @@
         <!--事件按钮-->
         <template #footer>
             <span class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="onSubmit('form')">确 定</el-button>
+                  <el-button @click="dialogFormVisible = false">取 消</el-button>
+                  <el-button type="primary" @click="onSubmit('form')">确 定</el-button>
             </span>
         </template>
     </el-dialog>
 
     <div class="el-table-main">
         {$table_html|raw}
-
         <div class="el-page-main">
             <el-pagination
                     background
                     layout="prev, pager, next"
                     :total="count"
                     :page-size="20"
-                    @current-change="init"
-
-            >
+                    @current-change="init">
             </el-pagination>
         </div>
     </div>

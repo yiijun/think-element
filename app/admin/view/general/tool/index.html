@@ -202,6 +202,7 @@
 
         <el-form-item label="查询渲染">
             <el-select v-model="default_fields.prop.search" placeholder="请选择查询类型">
+                <el-option  label="过滤查询" value=""></el-option>
                 <el-option  label="模糊查询" value="like"></el-option>
                 <el-option  label="等值查询" value="="></el-option>
                 <el-option  label="大于查询" value=">"></el-option>
@@ -439,7 +440,6 @@
                         return false;
                     }
                 });
-
             },
             handleTypes:function (e) {
               let _this = this
@@ -447,7 +447,7 @@
                   if(_this.types[i].type == e && _this.types[i].box == true){
                       _this.box = true
                       if(e == 'CascaderRadio'){
-                          _this.default_fields.prop.callback[0] = '/\/\app/\/\admin/\/\model/\/\Category'
+                          _this.default_fields.prop.callback[0] = '\\app\\admin\\model\\Category'
                           _this.default_fields.prop.callback[1] = "getPidSelect"
                       }
                       return;

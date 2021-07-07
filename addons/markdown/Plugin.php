@@ -36,14 +36,20 @@ class Plugin extends Addons
  onDialogOpen:function () {
         let _this = this
         setTimeout(function () {
-                    _this.plugins_data.Plugin_markdown_editor = editormd("markdown", {
+                    _this.plugins_data.Plugin_markdown_editor = editormd({
+                        id:"markdowns",
                         width: "100%",
                         height: "500px",
+                        codeFold : true,
                         path: "/static/addons/editor.md/lib/",
                         emoji: false,
                         tocm: true,
-                        flowChart: true,
-                        sequenceDiagram: true,
+                        flowChart: false,
+                        tex:false, //开启公式
+                        sequenceDiagram: false,
+                        dialogLockScreen : false, 
+                        dialogShowMask : false,
+                        dialogDraggable : false,
                         imageUpload: true,
                         imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
                         imageUploadURL: "{$upload_url}",
@@ -54,7 +60,7 @@ class Plugin extends Addons
                 let _this = this
                 this.\$refs[form].validate((valid) => {
                     if (valid) {
-                        let field = \$("#markdown").attr('data-id')
+                        let field = \$("#markdowns").attr('data-id')
                         let str = "_this.form."+field+"=_this.plugins_data.Plugin_markdown_editor.getMarkdown()"
                         eval(str)
                         axios.post(_this.api.post,_this.form).then(function (response) {

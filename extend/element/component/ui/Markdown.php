@@ -14,6 +14,9 @@ class Markdown
 {
     public static function html(array $fields,string $form_name = 'form'): string
     {
-        return '<el-form-item name="editor_content" prop="' . $fields['key'] . '" label="' . $fields['label'] . '"><div id="markdown" data-id="'.$fields['key'].'"><textarea v-model="'.$form_name.'.'.$fields['key'].'" style="display:none;"></textarea></div></el-form-item>';
+        return  '<el-form-item prop="'.$fields['key'].'" label="'.$fields['label'].'">'.PHP_EOL.
+            ' <div id="markdowns" data-id="'.$fields['key'].'">'.PHP_EOL.
+            '<textarea v-model="'.$form_name.'.'.$fields['key'].'" style="display:none;"></textarea>'.PHP_EOL.
+            '</div></el-form-item>';
     }
 }

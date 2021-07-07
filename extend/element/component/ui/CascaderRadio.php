@@ -19,13 +19,13 @@ class CascaderRadio
             $options = json_encode($options ?: [], 256);
         }
         return
-            '<el-form-item prop="' . $fields['key'] . '" label="' . $fields['label'] . '">' . PHP_EOL .
-            ' <el-cascader '.PHP_EOL.
-                ':options=\'' . $options . '\' v-model="'.$form_name.'.'.$fields['key'].'"'.PHP_EOL.
-                'placeholder="'.$fields['placeholder'].'"'.PHP_EOL.
-                ':props=\'{emitPath:'.$fields['prop']['emitPath'].',checkStrictly: true ,label:"' . $fields['prop']['bind_label'] . '",value:"' . $fields['prop']['bind_value'] . '"}\' 
-                filterable>' . PHP_EOL .
-            '</el-cascader>' . PHP_EOL .
+            '<el-form-item   prop="' . $fields['key'] . '" label="' . $fields['label'] . '">' . PHP_EOL .
+                ' <el-cascader '.PHP_EOL.
+                    ':options=\'' . $options . '\' v-model="'.$form_name.'.'.$fields['key'].'"'.PHP_EOL.
+                    'placeholder="'.$fields['placeholder'].'"'.PHP_EOL.
+                    ':props=\'{emitPath:false,checkStrictly:true,label:"' . $fields['prop']['bind_label'] . '",value:"' . $fields['prop']['bind_value'] . '"}\' 
+                    filterable>' . PHP_EOL .
+                '</el-cascader>' . PHP_EOL .
             '</el-form-item>' . PHP_EOL;
     }
 }

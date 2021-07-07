@@ -45,7 +45,20 @@ class  Rending
                     } else {
                         $model = new $field['prop']['callback'][0]();
                         $option = $model->{$field['prop']['callback'][1]}() ?: [];
-                        $option = json_encode($option ?: [], 256);
+                        //如果有多级则把数据组成一级
+                        $t = function ($option) use (&$t){
+                            static $ot = [];
+                            foreach ($option as $o){
+                                if($o['children']){
+                                    $t($o['children']);
+                                }else{
+                                    $ot[] = $o;
+                                }
+                            }
+                            return $ot;
+                        };
+                        $ot =  $t($option);
+                        $option = json_encode($ot ?: [], 256);
                     }
                     $table_html .= '<el-table-column  label="' . $field['label'] . '">';
                     $table_html .= '  <template #default="scope"> ';
@@ -69,7 +82,7 @@ class  Rending
                     }
                 }
             }
-            if (isset($field['prop']['search']) && true === $is_search) {
+            if (isset($field['prop']['search']) && !empty($field['prop']['search']) && true === $is_search) {
                 $search_html .= Hook::make(ucfirst($field['type']), $field, 'search') . PHP_EOL;
                 $search[$field['key']] = $field['value'];
             }

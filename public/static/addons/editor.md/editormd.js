@@ -556,7 +556,7 @@
             
             if (settings.codeFold)
             {
-                editormd.loadCSS(loadPath + "codemirror/addon/fold/foldgutter");            
+                editormd.loadCSS(loadPath + "codemirror/addon/fold/foldgutter");
             }
             
             editormd.loadScript(loadPath + "codemirror/codemirror.min", function() {
