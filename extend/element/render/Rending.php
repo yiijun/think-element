@@ -11,6 +11,7 @@ use think\facade\View;
 class  Rending
 {
     public $expend_all = false;
+    public  static $ot = [];
 
     public $button = ["add", "edit", "delete", "deletes", "search", "reset"];
 
@@ -46,15 +47,18 @@ class  Rending
                         $model = new $field['prop']['callback'][0]();
                         $option = $model->{$field['prop']['callback'][1]}() ?: [];
                         $t = function ($option) use (&$t){
-                            static $ot = [];
-                            foreach ($option as $o){
+                            foreach ($option as &$o){
                                 if(isset($o['children']) && !empty($o['children'])){
-                                    $t($o['children']);
+                                    $children = $o['children'];
+                                    unset($o['children']);
+                                    self::$ot[] = $o;
+                                    $t($children);
+
                                 }else{
-                                    $ot[] = $o;
+                                    self::$ot[] = $o;
                                 }
                             }
-                            return $ot;
+                            return self::$ot;
                         };
                         $ot =  $t($option);
                         $option = json_encode($ot ?: [], 256);
