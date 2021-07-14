@@ -11,7 +11,7 @@ use think\facade\View;
 class  Rending
 {
     public $expend_all = false;
-    public  static $ot = [];
+    public static $ot = [];
 
     public $button = ["add", "edit", "delete", "deletes", "search", "reset"];
 
@@ -37,7 +37,9 @@ class  Rending
         }
         $rules = [];
         foreach ($fields['fields'] as $field) {
-            $form_html .= Hook::make(ucfirst($field['type']), $field, 'form');
+            if (!isset($field['prop']['form_hidden'])) {
+                $form_html .= Hook::make(ucfirst($field['type']), $field, 'form');
+            }
             $form[$field['key']] = $field['value'];
             if (true === $is_table && true === $field['prop']['table_show']) {
                 if (isset($field['prop']['options']) || isset($field['prop']['callback'])) {
@@ -46,21 +48,21 @@ class  Rending
                     } else {
                         $model = new $field['prop']['callback'][0]();
                         $option = $model->{$field['prop']['callback'][1]}() ?: [];
-                        $t = function ($option) use (&$t){
-                            foreach ($option as &$o){
-                                if(isset($o['children']) && !empty($o['children'])){
+                        $t = function ($option) use (&$t) {
+                            foreach ($option as &$o) {
+                                if (isset($o['children']) && !empty($o['children'])) {
                                     $children = $o['children'];
                                     unset($o['children']);
                                     self::$ot[] = $o;
                                     $t($children);
 
-                                }else{
+                                } else {
                                     self::$ot[] = $o;
                                 }
                             }
                             return self::$ot;
                         };
-                        $ot =  $t($option);
+                        $ot = $t($option);
                         $option = json_encode($ot ?: [], 256);
                     }
                     $table_html .= '<el-table-column  label="' . $field['label'] . '">';
@@ -99,18 +101,18 @@ class  Rending
                 ];
             }
         }
-        if(true === $is_search){
-            $search_html .= Hook::make('Date',[
+        if (true === $is_search) {
+            $search_html .= Hook::make('Date', [
                 'key' => 'start_time',
                 'label' => '开始时间',
                 'placeholder' => '请输入开始时间',
-            ],'search');
+            ], 'search');
             $search['start_time'] = '';
-            $search_html .= Hook::make('Date',[
+            $search_html .= Hook::make('Date', [
                 'key' => 'end_time',
                 'label' => '结束时间',
                 'placeholder' => '请输入结束时间',
-            ],'search');
+            ], 'search');
             $search['end_time'] = '';
         }
         if (true === $is_table) {
