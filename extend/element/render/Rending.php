@@ -99,6 +99,20 @@ class  Rending
                 ];
             }
         }
+        if(true === $is_search){
+            $search_html .= Hook::make('Date',[
+                'key' => 'start_time',
+                'label' => '开始时间',
+                'placeholder' => '请输入开始时间',
+            ],'search');
+            $search['start_time'] = '';
+            $search_html .= Hook::make('Date',[
+                'key' => 'end_time',
+                'label' => '结束时间',
+                'placeholder' => '请输入结束时间',
+            ],'search');
+            $search['end_time'] = '';
+        }
         if (true === $is_table) {
             $table_html .= '<el-table-column fixed="right" label="操作" width="120">';
             $table_html .= '<template #default="scope">';

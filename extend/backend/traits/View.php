@@ -25,7 +25,11 @@ trait View
         $json_path = root_path() . 'public/static/backend/json/';
         $model_name = explode('.', strtolower($app->request->controller()));
         foreach ($model_name as $key => $value) {
-            $model_path .= $value . '\\';
+            if($key == count($model_name) - 1){
+                $model_path .= ucfirst($value) . '\\';
+            }else{
+                $model_path .= $value . '\\';
+            }
             $json_path .= $value . '/';
         }
         $model_path = trim($model_path, '\\');
@@ -50,6 +54,15 @@ trait View
             $start = ($page - 1) * 20;
             $where = " 1 = 1 ";
             if (!empty($search)) {
+                if($search['start_time'] && $search['end_time']){
+                    $where .= " and `create_time` >= '{$search['start_time']} 'and `create_time` <= '{$search['end_time']}'";
+                }elseif ($search['start_time'] && !$search['end_time']){
+                    $where .= " and `create_time` >= '{$search['start_time']}' ";
+                }elseif (!$search['start_time'] && $search['end_time']){
+                    $where .= " and `end_time` <= '{$search['end_time']}' ";
+                }
+                unset($search['start_time']);
+                unset($search['end_time']);
                 $fields = array_column($this->fields['fields'], null, 'key');
                 foreach ($search as $key => $value) {
                     if (!empty($value)) {
